@@ -1,0 +1,95 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  font-family: Orbitron, sans-serif;
+}
+.try {
+  height: 1000px;
+}
+
+.main-container {
+  position: relative;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+.main-background-img {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+/*texts and button container*/
+.right-side-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;       /* ✅ stack vertically */
+  align-items: flex-end;
+  gap: 10px;
+  /* background-color: rgba(0, 0, 0, 0.5);  */
+  padding: 10px;
+  border-radius: 8px;
+  width: max-content;
+}
+
+.text-container> p {
+  color: white;
+  margin: 0;
+  text-align: right;
+}
+
+.texts-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: white;
+}
+
+.begin-button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: rgba(231, 162, 45, 0.7);
+  box-shadow: 4px 8px 10px 0 rgba(0, 0, 0, 0.5);
+  height: 30px;
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px; /* ✅ spacing below last <p> */
+}
+.begin-button:hover {
+  background-color: rgba(231, 162, 45, 1);
+}
+
+.button-text {
+  color: white;
+  text-transform: uppercase;
+}
+
+
+/*tagline and rectangles container*/
+.diagonal-container {
+  width: 1050px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.diagonal {
+  width: 350px;
+  height: 150px;
+  background-color: rgba(0, 0, 0, 0.7);
+  clip-path: polygon(12% 0, 100% 0, 88% 100%, 0% 100%);
+}
+
+.tagline-container > p {
+  color: white;
+}
