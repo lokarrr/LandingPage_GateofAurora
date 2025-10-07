@@ -3,43 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/x-icon" href="C:\Users\admin\OneDrive\Documents\Landing_Page\images\dbf780eb-8103-4fca-8dfd-fc4b42054cd4.jpg">
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico"> 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css">
-  <title>Document</title>
+  <title>Your Project Title</title>
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <div class="main-container">
-      <img class="main-background-img" src="C:\Users\admin\OneDrive\Documents\Landing_Page\ezgif-3c8b2f746d5da2.gif">
+  
+  <div class="main-container" id="home-section">
+    <img class="main-background-img" src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\ezgif-3c8b2f746d5da2.gif" alt="Animated futuristic background">
 
-    <div class="right-side-container">
-      <div class="texts-container">
-        <p>Home</p>
-        <p>About us</p>
-        <p>Story</p>
+    <header class="top-side-container">
+      <nav class="texts-container">
+        <a href="#home-section" class="nav-link active">Home</a>
+        <a href="#about-section" class="nav-link">About us</a>
+        <a href="#story-section" class="nav-link">Story</a>
+        <a href="#media-section" class="nav-link">Media Gallery</a>
+      </nav>
+      <a href="#" class="buy-now" role="button" aria-label="Buy Now">
+        <span class="button-text">Buy now</span>
+      </a>
+    </header> 
+
+    <div class="left-side-container">
+      <div class="logo-container">
+        <img class="logo" src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\goa_logo4.png" alt="Transparent Project Logo">
       </div>
+      <div class="tagline-container">
+        <h1 class="tagline-text">"FORGED BY SCIENCE, DRIVEN BY VENGEANCE"</h1>
+        <p class="tagline-name">-Mabuyo</p>
+      </div>
+      <a href="#about-section" class="begin-button" role="button" aria-label="Begin Adventure">
+        <span class="button-text">Begin Adventure</span>
+      </a>
+    </div>
 
-      <div class="begin-button">
-        <div class="begin-adventure"> <span class="button-text"> Begin Adventure </span></div>
-    </div>
-   </div>
-   
-   <div class="left-side-container">
-    <div class="tagline-container">
-      <p>"Forged by science. Driven by vengeance"</p>
-    </div>
     <div class="diagonal-container">
       <div class="diagonal"></div>
       <div class="diagonal"></div>
       <div class="diagonal"></div>
     </div>
-   </div>
-  </div>
-
-  <div class="try">
 
   </div>
+
+  <div id="about-section" class="content-section"></div>
+  
+  <div id="story-section" class="content-section">
+      <h2>The Origin of Vengeance</h2>
+
+      <h3>Backstory</h3>
+      <p>
+          Once an ordinary teenager, he was **abducted** and forced into a cruel experiment designed to push the boundaries of human evolution. Stripped of his freedom and humanity, he became nothing more than a lab rat for the scientists’ twisted ambitions. After years of relentless modifications, the experiment reached its climax. His fragile body was **reforged with machinery**, his veins pumping with cold synthetic power.
+      </p>
+      <p>
+          Though the scientists celebrated their “success,” he saw only betrayal. His humanity was stolen, his youth sacrificed, his future rewritten into steel and wires. Consumed by rage, he attempted to strike down the very man who orchestrated his torment, which is **his creator**. But he was overpowered, discarded like broken equipment, and cast into the depths of the underground ruins, a place where failed experiments rot and forgotten machines linger.
+      </p>
+      <p>
+          Down there, surrounded by shadows and echoes of other abandoned projects, his anger hardened into purpose. He vowed that one day, he would rise again, tear through the robotic legions guarding the laboratory, and **exact his revenge**. He would not rest until his creator felt the same pain of destruction that he had endured.
+      </p>
+
+      <h3>Mission</h3>
+      <p>
+          Fight your way back to the laboratory and **confront your creator**. Along the path, swarms of robotic enforcers, failed experiments, and automated defenses stand in your way, each one programmed to stop you from reaching the surface.
+      </p>
+      <p>
+          Every enemy you dismantle brings you closer to vengeance, but also reveals fragments of the truth: why you were chosen, what the true goal of the experiment was, and the terrifying scale of the scientist’s plan. Your mission is not just to kill your creator but to **reclaim your stolen humanity**, or destroy what remains of it.
+      </p>
+  </div>
+  
+  <div id="media-section" class="content-section">
+          <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 50px;">OFFICIAL GAME TRAILER</h2>
+      
+      <div class="video-wrapper">
+          <iframe 
+            width="100%" 
+            height="100%" 
+            src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\557335779_25365562646384218_433289914195883203_n.mp4" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+      </div>
+
+      <p style="color: white; text-align: center; margin-top: 30px; font-style: italic;">Scroll down for more screenshots and concept art.</p>
+  </div>
+
 </body>
 </html>

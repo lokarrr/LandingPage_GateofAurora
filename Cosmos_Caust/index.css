@@ -1,17 +1,34 @@
+:root {
+  /* Define main colors as variables for easy updates */
+  --primary-color: #ff9900; /* Orange/Gold */
+  --secondary-color: #0099ff; /* Blue */
+  --text-color: white;
+  --background-overlay: rgba(0, 0, 0, 0.7);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   padding: 0;
-  height: 100vh;
-  font-family: Orbitron, sans-serif;
-}
-.try {
-  height: 1000px;
+  font-family: 'Orbitron', sans-serif;
+  background-color: #000; /* Fallback background */
 }
 
+/* Style for additional content sections to make the page scrollable */
+.content-section {
+  min-height: 1000px; /* Gives content sections height for scrolling */
+  background-color: var(--background-overlay);
+  margin-top: 50px; /* Separator for sections */
+}
+
+
+/* Main Layout */
 .main-container {
   position: relative;
   min-height: 100vh;
-  overflow: visible;
 }
 
 .main-background-img {
@@ -23,73 +40,235 @@ body {
   object-fit: cover;
   z-index: -1;
 }
-/*texts and button container*/
-.right-side-container {
-  position: absolute;
+
+/* --- TOP RIGHT: Navigation & Buy Button --- */
+.top-side-container {
+  position: fixed; /* Ensures navigation is always visible */
   top: 20px;
   right: 20px;
   display: flex;
-  flex-direction: column;       /* ✅ stack vertically */
-  align-items: flex-end;
+  flex-direction: column;  
+  align-items: flex-end; /* Align items to the right */
   gap: 10px;
-  /* background-color: rgba(0, 0, 0, 0.5);  */
-  padding: 10px;
-  border-radius: 8px;
   width: max-content;
+  z-index: 100;
 }
 
-.text-container> p {
-  color: white;
-  margin: 0;
-  text-align: right;
-}
-
-.texts-container{
+.texts-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  color: white;
+  color: var(--text-color);
+  gap: 20px;
 }
 
-.begin-button {
-  padding: 15px 30px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: rgba(231, 162, 45, 0.7);
-  box-shadow: 4px 8px 10px 0 rgba(0, 0, 0, 0.5);
-  height: 30px;
-  width: 200px;
+.nav-link {
+  position: relative;
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 1.1rem; 
+  font-weight: 500;
+  padding-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--primary-color);
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  transform: scaleX(1);
+}
+
+/* Re-styling button shared properties */
+.buy-now, .begin-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px; /* ✅ spacing below last <p> */
-}
-.begin-button:hover {
-  background-color: rgba(231, 162, 45, 1);
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .button-text {
-  color: white;
+  color: var(--text-color);
   text-transform: uppercase;
+  font-weight: 600;
 }
 
+.buy-now {
+  padding: 5px 15px;
+  border: 2px solid var(--secondary-color);
+  height: 40px;
+  width: 150px;
+}
 
-/*tagline and rectangles container*/
+.buy-now .button-text {
+  font-size: 1.2rem;
+}
+
+.buy-now:hover {
+  transform: scale(1.03);
+  box-shadow:
+    0 0 8px var(--secondary-color), 
+    0 0 12px var(--secondary-color), 
+    4px 8px 10px rgba(0, 0, 0, 0.6);
+}
+
+.begin-button {
+  padding: 10px 25px;
+  border: none;
+  background-color: rgba(231, 162, 45, 0.85);
+  box-shadow: 4px 8px 10px 0 rgba(0, 0, 0, 0.5);
+  height: 50px;
+  width: 280px;
+}
+
+.begin-button .button-text {
+  font-size: 1.5rem;
+}
+
+.begin-button:hover {
+  background-color: rgba(231, 162, 45, 1);
+  transform: scale(1.05);
+  box-shadow: 6px 10px 14px rgba(0, 0, 0, 0.6);
+}
+
+/* --- LEFT SIDE: Logo & Tagline --- */
+.left-side-container {
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  position: absolute;
+  bottom: 30%;
+  left: 10%;
+  z-index: 1;
+}
+
+.logo {
+  height: 150px;
+  width: 200px;
+  transition: filter 0.3s ease, transform 0.2s ease;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 5px var(--secondary-color));
+}
+
+.tagline-container{
+  width: 1200px;
+}
+
+.tagline-text {
+  color: var(--text-color);
+  font-size: 4.375rem; 
+  font-weight: 600;
+  text-shadow: 0 0 8px var(--secondary-color);
+  margin: 0;
+}
+
+.tagline-name{
+  color: var(--text-color);
+  font-size: 1.5625rem; 
+  opacity: .8;
+  font-weight: 500;
+}
+
+/* --- BOTTOM: Decorative Elements --- */
 .diagonal-container {
   width: 1050px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  position: absolute;
+  bottom: -20%;
+  left: 23%;
+  z-index: 1;
 }
 
 .diagonal {
   width: 350px;
   height: 150px;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: var(--background-overlay);
   clip-path: polygon(12% 0, 100% 0, 88% 100%, 0% 100%);
 }
 
-.tagline-container > p {
-  color: white;
+/* --- STORY SECTION SPECIFIC STYLES --- */
+#story-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 100px 10%;
+    min-height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('images/fe91d17d-2fa9-4009-8ed6-235629e02f.png');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: left;
+    margin-top: 0; 
+}
+
+#story-section h2 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
+    margin-bottom: 30px;
+    text-align: center;
+    width: 100%;
+}
+
+#story-section h3 {
+    font-size: 1.8rem;
+    color: var(--secondary-color);
+    margin-top: 50px;
+    margin-bottom: 15px;
+}
+
+#story-section p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+/* --- MEDIA SECTION SPECIFIC STYLES --- */
+#media-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 100px;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 80%; /* Takes up 80% of the section width */
+  max-width: 1000px; /* Prevents it from getting too wide on huge screens */
+  /* This padding trick maintains a 16:9 aspect ratio for the video player */
+  padding-bottom: 45%; /* (9 / 16) * 80% = 45% of width */
+  height: 0;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 153, 255, 0.5); /* Blue glow */
 }
