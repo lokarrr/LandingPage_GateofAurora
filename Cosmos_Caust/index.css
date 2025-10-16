@@ -1,5 +1,5 @@
 :root {
-  /* Define main colors as variables for easy updates */
+  /* Define main colors as variables for easy updates (Orange/Gold and Blue) */
   --primary-color: #ff9900; /* Orange/Gold */
   --secondary-color: #0099ff; /* Blue */
   --text-color: white;
@@ -17,11 +17,26 @@ body {
   background-color: #000; /* Fallback background */
 }
 
-/* Style for additional content sections to make the page scrollable */
+/* 1. Structural styles for content sections (NO ANIMATION STYLES HERE) */
 .content-section {
-  min-height: 1000px; /* Gives content sections height for scrolling */
   background-color: var(--background-overlay);
   margin-top: 50px; /* Separator for sections */
+}
+
+/* 2. THE ANIMATION WRAPPER: Handles the fade-in animation and content sizing */
+.content-section-wrapper {
+  min-height: 1000px; /* Gives content sections height for scrolling */
+  padding: 100px 10%; 
+  box-sizing: border-box; 
+  
+  /* **SLOWER ANIMATION DURATION (1.2 seconds)** */
+  transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+/* **Initial hidden state (Slide-up effect)** */
+.section-hidden {
+    opacity: 0;
+    transform: translateY(50px); 
 }
 
 
@@ -41,7 +56,7 @@ body {
   z-index: -1;
 }
 
-/* --- TOP RIGHT: Navigation & Buy Button --- */
+/* --- TOP RIGHT: Navigation & Buy Button (FIXED) --- */
 .top-side-container {
   position: fixed; /* Ensures navigation is always visible */
   top: 20px;
@@ -210,17 +225,21 @@ body {
 
 /* --- STORY SECTION SPECIFIC STYLES --- */
 #story-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 100px 10%;
-    min-height: 100vh;
+    /* Apply special background to the main section */
     background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('images/fe91d17d-2fa9-4009-8ed6-235629e02f.png');
     background-size: cover;
     background-position: center;
     color: white;
     text-align: left;
     margin-top: 0; 
+}
+
+/* Apply flex alignment to the wrapper for content centering */
+#story-section .content-section-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
 }
 
 #story-section h2 {
@@ -247,20 +266,20 @@ body {
 }
 
 /* --- MEDIA SECTION SPECIFIC STYLES --- */
-#media-section {
+#media-section .content-section-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 100px;
+  min-height: 120vh;
 }
 
 .video-wrapper {
   position: relative;
-  width: 80%; /* Takes up 80% of the section width */
-  max-width: 1000px; /* Prevents it from getting too wide on huge screens */
-  /* This padding trick maintains a 16:9 aspect ratio for the video player */
-  padding-bottom: 45%; /* (9 / 16) * 80% = 45% of width */
+  width: 80%; 
+  max-width: 1000px; 
+  padding-bottom: 45%; /* 16:9 aspect ratio */
   height: 0;
+  margin-bottom: 50px;
 }
 
 .video-wrapper iframe {
@@ -271,4 +290,84 @@ body {
   height: 100%;
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(0, 153, 255, 0.5); /* Blue glow */
+}
+
+/* NEW STYLES FOR SCREENSHOT GALLERY */
+.screenshot-gallery {
+  display: grid;
+  width: 90%; 
+  max-width: 1200px;
+  margin: 50px 0;
+  gap: 15px;
+  grid-template-columns: repeat(4, 1fr); 
+}
+
+.screenshot-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
+  border: 2px solid var(--secondary-color); /* Blue border */
+  box-shadow: 0 0 15px rgba(0, 153, 255, 0.4); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.large-item {
+  grid-column: 1 / span 4; /* Takes up all 4 columns in the first row */
+}
+
+.small-item {
+  aspect-ratio: 16 / 9; /* Ensures small images have a consistent look */
+}
+
+/* Apply hover effects to all items */
+.screenshot-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 153, 255, 0.8), 0 0 10px var(--primary-color);
+  z-index: 5; /* Bring hovered image forward */
+}
+
+.game-screenshot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* KEY COLOR FILTER: Apply to all images by default */
+  filter: grayscale(80%) brightness(80%) contrast(120%) hue-rotate(180deg) saturate(150%);
+  transition: filter 0.5s ease-in-out, transform 0.3s ease;
+}
+
+/* Remove filter and add zoom on hover for all images */
+.screenshot-item:hover .game-screenshot {
+  filter: none;
+  transform: scale(1.03); 
+}
+
+.screenshot-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px 20px;
+  background-color: var(--background-overlay); /* Dark transparent background */
+  color: var(--primary-color); /* Orange text */
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+/* Handle Responsiveness for smaller screens */
+@media (max-width: 768px) {
+  .screenshot-gallery {
+    grid-template-columns: 1fr; /* Single column on small screens */
+  }
+  .large-item {
+    grid-column: 1 / 1; /* Reset to single column */
+  }
+  .small-item {
+    aspect-ratio: auto; /* Allow height to adjust naturally */
+  }
 }

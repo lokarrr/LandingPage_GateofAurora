@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/x-icon" href="images/favicon.ico"> 
+  <link rel="icon" type="image/x-icon" href="images/dbf780eb-8103-4fca-8dfd-fc4b42054cd4.jpg"> 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
         <a href="#story-section" class="nav-link">Story</a>
         <a href="#media-section" class="nav-link">Media Gallery</a>
       </nav>
-      <a href="#" class="buy-now" role="button" aria-label="Buy Now">
+      <a href="https://your-game-purchase-page.com" class="buy-now" role="button" aria-label="Buy Now" target="_blank">
         <span class="button-text">Buy now</span>
       </a>
     </header> 
@@ -36,7 +36,7 @@
         <h1 class="tagline-text">"FORGED BY SCIENCE, DRIVEN BY VENGEANCE"</h1>
         <p class="tagline-name">-Mabuyo</p>
       </div>
-      <a href="#about-section" class="begin-button" role="button" aria-label="Begin Adventure">
+      <a href="https://your-game-info-page.com" class="begin-button" role="button" aria-label="Begin Adventure" target="_blank">
         <span class="button-text">Begin Adventure</span>
       </a>
     </div>
@@ -49,9 +49,16 @@
 
   </div>
 
-  <div id="about-section" class="content-section"></div>
+  <div id="about-section" class="content-section">
+    <div class="content-section-wrapper section-hidden">
+        <h2>About Us</h2>
+        <p>This is where the introductory content for the project goes. Fill this section out with a few paragraphs describing the project, your team, and your vision.</p>
+        <p>This section is currently short, but its height is controlled by the CSS min-height for demonstration purposes. Once you add more content, you can remove the min-height if desired.</p>
+    </div>
+  </div>
   
   <div id="story-section" class="content-section">
+    <div class="content-section-wrapper section-hidden">
       <h2>The Origin of Vengeance</h2>
 
       <h3>Backstory</h3>
@@ -72,23 +79,46 @@
       <p>
           Every enemy you dismantle brings you closer to vengeance, but also reveals fragments of the truth: why you were chosen, what the true goal of the experiment was, and the terrifying scale of the scientist’s plan. Your mission is not just to kill your creator but to **reclaim your stolen humanity**, or destroy what remains of it.
       </p>
+    </div>
   </div>
   
   <div id="media-section" class="content-section">
-          <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 50px;">OFFICIAL GAME TRAILER</h2>
+    <div class="content-section-wrapper section-hidden">
+      <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 50px;">OFFICIAL GAME TRAILER</h2>
       
       <div class="video-wrapper">
           <iframe 
             width="100%" 
             height="100%" 
-            src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\557335779_25365562646384218_433289914195883203_n.mp4" 
+            src="[YOUR_TRAILER_EMBED_URL]" 
             frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen>
           </iframe>
       </div>
 
-      <p style="color: white; text-align: center; margin-top: 30px; font-style: italic;">Scroll down for more screenshots and concept art.</p>
+      <p style="color: white; text-align: center; margin-top: 30px; font-style: italic;">GAME SCREENSHOTS</p>
+      
+      <div class="screenshot-gallery">
+        <div class="screenshot-item large-item">
+          <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\553429057_25734727919449568_164626615197040820_n.jpg" alt="Game Screenshot 1" class="game-screenshot">
+          <div class="screenshot-caption">8 Levels, 8 Different Worlds</div>
+        </div>
+        
+        <div class="screenshot-item small-item">
+          <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\4 3.jpg" alt="Game Screenshot 2" class="game-screenshot">
+        </div>
+        <div class="screenshot-item small-item">
+          <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\5 3.jpg" alt="Game Screenshot 3" class="game-screenshot">
+        </div>
+        <div class="screenshot-item small-item">
+          <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\6 3.jpg" alt="Game Screenshot 4" class="game-screenshot">
+        </div>
+        <div class="screenshot-item small-item">
+          <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\7 3.jpg" alt="Game Screenshot 5" class="game-screenshot">
+        </div>
+      </div>
+    </div>
   </div>
 
 </body>
