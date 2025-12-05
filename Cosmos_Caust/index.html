@@ -119,29 +119,127 @@
 
   <div id="characters-section" class="content-section">
     <div class="content-section-wrapper section-hidden">
-      <h2>Character Archetypes</h2>
+      <h2>Character Showcase</h2>
+      <p class="character-intro">Click on any character to explore their details</p>
       
-      <div class="character-grid">
-        <div class="char-card">
-          <div class="char-img-box">
-            <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\5 3.jpg" alt="The Avenger"> 
+      <div class="character-cinematic-gallery">
+        <!-- Character 1 -->
+        <div class="cinematic-card" data-character="1">
+          <div class="cinematic-image-container">
+            <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\MC.png" alt="Robotic Protagonist" class="cinematic-image">
+            <div class="cinematic-overlay">
+              <h3 class="cinematic-name">Robotic Protagonist</h3>
+              <p class="cinematic-role">Main Hero</p>
+              <div class="cinematic-description">
+                <p>The main protagonist, a robotic character clad in bright pink segmented armor. Features a rounded helmet with a solid blue visor and possesses a mechanical arm cannon integrated into their right arm.</p>
+              </div>
+            </div>
           </div>
-          <h3>Unit 734 (The Avenger)</h3>
-          <p class="char-role">The Reluctant Hero</p>
-          <p>
-            Formerly human, now a weapon. Unit 734 relies on his cybernetic enhancements to survive. He is fast, agile, and fueled by a singular need for vengeance against the one who stole his life.
-          </p>
         </div>
-  
-        <div class="char-card">
-          <div class="char-img-box">
-            <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\goa_logo2.png" alt="Mabuyo">
+
+        <!-- Character 2 -->
+        <div class="cinematic-card" data-character="2">
+          <div class="cinematic-image-container">
+            <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\Enemy1.png" alt="Pink Dinosaur Enemy" class="cinematic-image">
+            <div class="cinematic-overlay">
+              <h3 class="cinematic-name">Pink Dinosaur</h3>
+              <p class="cinematic-role">Small Enemy</p>
+              <div class="cinematic-description">
+                <p>A small, pink, dinosaur-like enemy with yellow eyes and sharp white teeth. Fast and agile, these creatures swarm the player in groups.</p>
+              </div>
+            </div>
           </div>
-          <h3>Mabuyo (The Creator)</h3>
-          <p class="char-role">The Mad Scientist</p>
-          <p>
-            A genius consumed by the desire to "perfect" humanity. He views Unit 734 not as a person, but as his greatest success—and his biggest failure. He commands the station from the shadows.
-          </p>
+        </div>
+
+        <!-- Character 3 -->
+        <div class="cinematic-card" data-character="3">
+          <div class="cinematic-image-container">
+            <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\Enemy2.png" alt="Mushroom Cap Creature" class="cinematic-image">
+            <div class="cinematic-overlay">
+              <h3 class="cinematic-name">Mushroom Cap Creature</h3>
+              <p class="cinematic-role">Walking Enemy</p>
+              <div class="cinematic-description">
+                <p>A walking enemy that resembles a purple creature wearing a blue, spotted mushroom cap. These creatures patrol areas and attack on sight.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Character 4 -->
+        <div class="cinematic-card" data-character="4">
+          <div class="cinematic-image-container">
+            <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\Boss1.png" alt="Segmented Boss Monster" class="cinematic-image">
+            <div class="cinematic-overlay">
+              <h3 class="cinematic-name">Spiked Boss Monster</h3>
+              <p class="cinematic-role">Boss Enemy</p>
+              <div class="cinematic-description">
+                <p>A large, segmented boss monster with red spikes and green skin, capable of devastating roars. Guards important vault doors and requires strategic combat.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Character 5 -->
+        <div class="cinematic-card" data-character="5">
+          <div class="cinematic-image-container">
+            <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\Boss2.png" alt="Wizard Character" class="cinematic-image">
+            <div class="cinematic-overlay">
+              <h3 class="cinematic-name">Vault Wizard</h3>
+              <p class="cinematic-role">Magic Enemy</p>
+              <div class="cinematic-description">
+                <p>A wizard character wearing a purple robe and hood, casting spells that generate purple floating projectiles. Often found guarding glowing pink vaults.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Character 6 -->
+        <div class="cinematic-card" data-character="6">
+          <div class="cinematic-image-container">
+            <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\Boss3.png" alt="Hooded Enemy" class="cinematic-image">
+            <div class="cinematic-overlay">
+              <h3 class="cinematic-name">Dark Summoner</h3>
+              <p class="cinematic-role">Summoner Enemy</p>
+              <div class="cinematic-description">
+                <p>A tall, purple-skinned enemy with a single glowing orange eye and a hood. Wields a white curved blade and casts dark magic to summon reinforcements.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Character Detail Modal -->
+  <div id="character-modal" class="character-modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <div class="modal-image-container">
+        <img id="modal-character-image" src="" alt="Character">
+      </div>
+      <div class="modal-text">
+        <h2 id="modal-character-name">Character Name</h2>
+        <p id="modal-character-role" class="modal-role">Character Role</p>
+        <p id="modal-character-description">Character description goes here...</p>
+        <div class="modal-stats">
+          <div class="stat">
+            <span class="stat-label">Difficulty</span>
+            <div class="stat-bar">
+              <div class="stat-fill" id="stat-difficulty"></div>
+            </div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Aggression</span>
+            <div class="stat-bar">
+              <div class="stat-fill" id="stat-aggression"></div>
+            </div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Speed</span>
+            <div class="stat-bar">
+              <div class="stat-fill" id="stat-speed"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -186,6 +284,125 @@
           </ul>
         </div>
       </div>
+
+      <!-- Mechanics Gallery Section -->
+      <div class="mechanics-gallery-section">
+        <h3 style="color: var(--primary-color); text-align: center; margin-top: 80px; margin-bottom: 40px; font-size: 2rem;">GAMEPLAY VISUALS</h3>
+        <p class="mechanics-intro">Explore the world of Gate of Aurora through these gameplay visuals</p>
+        
+        <div class="mechanics-visuals-gallery">
+          <!-- Image 1: Combat -->
+          <div class="mechanics-visual-card">
+            <div class="visual-image-container">
+              <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\gamelook1.png" alt="Combat System" class="visual-image">
+              <div class="visual-overlay">
+                <div class="visual-badge">COMBAT</div>
+                <h4 class="visual-title">Dynamic Combat System</h4>
+                <p class="visual-desc">Engage in fast-paced combat against robotic enforcers with your mechanical arm cannon.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Image 2: Platforming -->
+          <div class="mechanics-visual-card">
+            <div class="visual-image-container">
+              <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\gamelook2.png" alt="Platforming" class="visual-image">
+              <div class="visual-overlay">
+                <div class="visual-badge">PLATFORMING</div>
+                <h4 class="visual-title">Precision Platforming</h4>
+                <p class="visual-desc">Navigate treacherous environments with double jump mechanics and agile movement.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Image 3: Boss Battle -->
+          <div class="mechanics-visual-card">
+            <div class="visual-image-container">
+              <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\gamelook3.png" alt="Boss Battle" class="visual-image">
+              <div class="visual-overlay">
+                <div class="visual-badge">BOSS</div>
+                <h4 class="visual-title">Epic Boss Encounters</h4>
+                <p class="visual-desc">Face massive, screen-filling bosses with unique attack patterns and phases.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Image 4: Environment -->
+          <div class="mechanics-visual-card">
+            <div class="visual-image-container">
+              <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\gamelook4.png" alt="Environment" class="visual-image">
+              <div class="visual-overlay">
+                <div class="visual-badge">EXPLORATION</div>
+                <h4 class="visual-title">Diverse Environments</h4>
+                <p class="visual-desc">Explore 8 unique biomes, from underground ruins to high-tech laboratories.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Image 5: Abilities -->
+          <div class="mechanics-visual-card">
+            <div class="visual-image-container">
+              <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\gamelook5.png" alt="Abilities" class="visual-image">
+              <div class="visual-overlay">
+                <div class="visual-badge">ABILITIES</div>
+                <h4 class="visual-title">Special Abilities</h4>
+                <p class="visual-desc">Unlock and master powerful skills to overcome challenging obstacles.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Image 6: Progression -->
+          <div class="mechanics-visual-card">
+            <div class="visual-image-container">
+              <img src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\gamelook6.png" alt="Progression" class="visual-image">
+              <div class="visual-overlay">
+                <div class="visual-badge">PROGRESSION</div>
+                <h4 class="visual-title">Key-Based Progression</h4>
+                <p class="visual-desc">Clear areas to collect keys that unlock new levels and secrets.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Interactive Feature Toggle -->
+        <div class="mechanics-toggle-section">
+          <div class="toggle-container">
+            <button class="toggle-btn active" data-toggle="gameplay">GAMEPLAY</button>
+            <button class="toggle-btn" data-toggle="ui">UI/INTERFACE</button>
+            <button class="toggle-btn" data-toggle="effects">VISUAL EFFECTS</button>
+          </div>
+          
+          <div class="toggle-content active" id="gameplay-content">
+            <div class="feature-highlight">
+              <div class="feature-icon">🎮</div>
+              <div class="feature-text">
+                <h4>Real-time Combat Feedback</h4>
+                <p>Hit indicators, damage numbers, and visual feedback for every action ensure you always know what's happening in combat.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="toggle-content" id="ui-content">
+            <div class="feature-highlight">
+              <div class="feature-icon">📊</div>
+              <div class="feature-text">
+                <h4>Minimalist UI Design</h4>
+                <p>Clean interface that keeps you focused on the action without screen clutter. Health, ammo, and abilities are displayed intuitively.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="toggle-content" id="effects-content">
+            <div class="feature-highlight">
+              <div class="feature-icon">✨</div>
+              <div class="feature-text">
+                <h4>Dynamic Visual Effects</h4>
+                <p>Particle effects, screen shakes, and dynamic lighting enhance gameplay immersion and provide satisfying feedback.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   
@@ -197,7 +414,7 @@
           <iframe 
             width="100%" 
             height="100%" 
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+            src="C:\Users\admin\OneDrive\Documents\Landing_Page\images\trailer.mp4" 
             title="Gate of Aurora Trailer"
             frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
