@@ -417,207 +417,167 @@
       }
   });
 
-  // --- 8. CAROUSEL/SLIDER FUNCTIONALITY (New Section) ---
+  // --- 8. CAROUSEL/SLIDER FUNCTIONALITY (JS Game Loop) ---
   
   function initCarousel() {
     const track = document.getElementById('carouselTrack');
-    const slides = Array.from(track.querySelectorAll('.carousel-slide'));
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     
-    if (!track || slides.length === 0) return;
+    if (!track) return;
 
-    let currentIndex = 0;
-    const itemsPerView = 3;
-    let slideWidth = 0;
-    let autoPlayInterval;
-    const cloneCount = itemsPerView;
-
-    // --- Cloning for Infinite Loop ---
-    // Clone end slides to the beginning
-    for (let i = 0; i < cloneCount; i++) {
-        const clone = slides[slides.length - 1 - i].cloneNode(true);
-        track.prepend(clone);
-    }
-    // Clone start slides to the end
-    for (let i = 0; i < cloneCount; i++) {
-        const clone = slides[i].cloneNode(true);
-        track.appendChild(clone);
-    }
-    
-    const allSlides = Array.from(track.querySelectorAll('.carousel-slide'));
-    const totalRealSlides = slides.length;
-    let currentSlideIndex = cloneCount; // Start position is the first real slide
-
-    // --- Calculation and Setup ---
-    function updateSlideWidth() {
-        // Calculate the width of one real slide based on the first real element
-        const firstRealSlide = allSlides[cloneCount];
-        if (firstRealSlide) {
-            // Get the width of the slide including its left/right margins (20px total margin)
-            slideWidth = firstRealSlide.offsetWidth + 20; 
-        }
-        
-        // Set initial position to the first real slide set (skip initial clones)
-        track.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
-    }
-
-    // Recalculate width on resize
-    window.addEventListener('resize', () => {
-        // Temporarily remove transition for instant position update on resize
-        track.style.transition = 'none';
-        updateSlideWidth();
-        // Restore transition after a brief moment
-        setTimeout(() => {
-            track.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        }, 50);
-    });
-
-    // Initial setup
-    updateSlideWidth();
-    
-    // --- Carousel Movement Logic ---
-    function moveSlides(direction) {
-        // direction: 1 for next, -1 for previous
-        currentSlideIndex += direction;
-        
-        track.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        track.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
-    }
-    
-    // Logic for smooth, infinite loop transition
-    function handleLoopTransition() {
-        if (currentSlideIndex >= totalRealSlides + cloneCount) {
-            // Reached the end clones, jump back to the first real slide instantly
-            currentSlideIndex = cloneCount;
-            // Remove transition for instant jump
-            track.style.transition = 'none';
-            track.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
-            // Re-enable transition after brief pause
-            setTimeout(() => {
-                track.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            }, 50);
-            
-        } else if (currentSlideIndex < cloneCount) {
-            // Reached the beginning clones, jump back to the last real slide instantly
-            currentSlideIndex = totalRealSlides + cloneCount - 1;
-            // Remove transition for instant jump
-            track.style.transition = 'none';
-            track.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
-            // Re-enable transition after brief pause
-            setTimeout(() => {
-                track.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            }, 50);
-        }
-    }
-    
-    // Listen for CSS transition end to handle the loop jump
-    track.addEventListener('transitionend', handleLoopTransition);
-    
-    // --- Navigation Buttons ---
-    nextBtn.addEventListener('click', () => {
-        stopAutoplay();
-        moveSlides(1);
-        startAutoplay();
-    });
-
-    prevBtn.addEventListener('click', () => {
-        stopAutoplay();
-        moveSlides(-1);
-        startAutoplay();
-    });
-
-    // --- Autoplay ---
-    function startAutoplay() {
-        stopAutoplay(); // Clear any existing interval
-        // Autoplay runs continuously
-        autoPlayInterval = setInterval(() => {
-            moveSlides(1); // Move to the right (slides move left)
-        }, 3000); // Change slide every 3 seconds
-    }
-
-    function stopAutoplay() {
-        clearInterval(autoPlayInterval);
-    }
-    
-    // Start initial autoplay (Removed mouseenter/mouseleave listeners)
-    startAutoplay();
-
-    // --- Touch/Swipe Functionality ---
-    let touchStartX = 0;
-    let touchMoveX = 0;
+    // --- Configuration ---
+    const autoScrollSpeed = 1; // Pixels per frame (Adjust for speed)
+    let isPaused = false;
     let isDragging = false;
+    
+    // --- State ---
+    let currentX = 0;
+    let startX = 0;
+    let dragStartX = 0;
+    let targetX = null; // For button navigation smoothing
 
-    track.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        touchStartX = e.clientX;
-        track.style.transition = 'none';
-        stopAutoplay();
+    // --- Setup Clones ---
+    // We need enough clones to fill the screen twice to ensure seamless looping
+    const originalSlides = Array.from(track.children);
+    
+    // Clone logic: Append original set to end, and prepend to start
+    originalSlides.forEach(slide => {
+      const cloneEnd = slide.cloneNode(true);
+      cloneEnd.classList.add('clone');
+      track.appendChild(cloneEnd);
     });
 
-    track.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        touchMoveX = e.clientX;
-        const dragDistance = touchMoveX - touchStartX;
-        
-        // Calculate the current base translate value from the current index
-        const currentTranslate = -currentSlideIndex * slideWidth;
-        
-        // Apply the drag distance on top of the base translate
-        track.style.transform = `translateX(${currentTranslate + dragDistance}px)`;
-    });
+    // Get all slides now including clones
+    let allSlides = Array.from(track.querySelectorAll('.carousel-slide'));
+    
+    // --- Metrics ---
+    // We calculate these dynamically to support responsive resizing
+    function getMetrics() {
+      const slide = allSlides[0];
+      const style = window.getComputedStyle(slide);
+      const width = slide.offsetWidth;
+      const margin = parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+      const fullSlideWidth = width + margin;
+      
+      // The width of one complete set of original slides
+      const singleSetWidth = fullSlideWidth * originalSlides.length;
+      
+      return { fullSlideWidth, singleSetWidth };
+    }
 
-    track.addEventListener('mouseup', handleDragEnd);
+    // --- Interaction Event Listeners ---
+
+    // 1. Pause on Hover (Desktop) / Touch (Mobile)
+    track.addEventListener('mouseenter', () => isPaused = true);
     track.addEventListener('mouseleave', () => {
-        if (isDragging) {
-            handleDragEnd(); // Treat mouse leaving as a release
-        }
+      if (!isDragging) isPaused = false;
     });
+    
+    // 2. Touch/Drag Logic
+    const handleDragStart = (x) => {
+      isDragging = true;
+      isPaused = true;
+      startX = x;
+      dragStartX = currentX;
+      track.style.cursor = 'grabbing';
+      // Cancel any button animation
+      targetX = null; 
+    };
 
-    track.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        touchStartX = e.touches[0].clientX;
-        track.style.transition = 'none';
-        stopAutoplay();
-    }, { passive: true }); // Use passive listener for better scrolling performance
+    const handleDragMove = (x) => {
+      if (!isDragging) return;
+      const diff = x - startX;
+      currentX = dragStartX + diff;
+    };
 
-    track.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        touchMoveX = e.touches[0].clientX;
-        const dragDistance = touchMoveX - touchStartX;
-        const currentTranslate = -currentSlideIndex * slideWidth;
-        track.style.transform = `translateX(${currentTranslate + dragDistance}px)`;
+    const handleDragEnd = () => {
+      isDragging = false;
+      // Resume auto-scroll if mouse leaves, otherwise wait for mouseleave event
+      track.style.cursor = 'grab';
+    };
+
+    // Mouse Events
+    track.addEventListener('mousedown', e => {
+      e.preventDefault(); // Prevent text selection
+      handleDragStart(e.clientX);
     });
+    window.addEventListener('mousemove', e => handleDragMove(e.clientX));
+    window.addEventListener('mouseup', handleDragEnd);
 
+    // Touch Events
+    track.addEventListener('touchstart', e => handleDragStart(e.touches[0].clientX), { passive: false });
+    track.addEventListener('touchmove', e => handleDragMove(e.touches[0].clientX), { passive: false });
     track.addEventListener('touchend', handleDragEnd);
 
-    function handleDragEnd() {
-        if (!isDragging) return;
-        isDragging = false;
-        
-        const dragDistance = touchMoveX - touchStartX;
-        const threshold = slideWidth * 0.2; // 20% of a slide width is the swipe threshold
-
-        // Decide if we should move to the next/previous slide
-        if (dragDistance > threshold) {
-            // Swiped right (show previous slide)
-            moveSlides(-1);
-        } else if (dragDistance < -threshold) {
-            // Swiped left (show next slide)
-            moveSlides(1);
-        } else {
-            // Not enough swipe distance, snap back to current slide
-            track.style.transition = 'transform 0.3s ease';
-            track.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
-        }
-        
-        // Reset touch tracking variables
-        touchStartX = 0;
-        touchMoveX = 0;
-        
-        startAutoplay();
+    // 3. Arrow Navigation
+    function moveSlide(direction) {
+      const { fullSlideWidth } = getMetrics();
+      
+      // If we are already animating to a target, update it, otherwise start from current
+      const startPos = targetX !== null ? targetX : currentX;
+      
+      // Set target (Move 1 slide width)
+      targetX = startPos - (direction * fullSlideWidth);
+      isPaused = true; // Pause auto-scroll while animating manually
+      
+      // Auto-resume after animation (optional, creates a nice 'pause after click' feel)
+      setTimeout(() => {
+        targetX = null;
+        if (!track.matches(':hover')) isPaused = false;
+      }, 600);
     }
+
+    nextBtn.addEventListener('click', () => moveSlide(1)); // Move Left (Next)
+    prevBtn.addEventListener('click', () => moveSlide(-1)); // Move Right (Prev)
+
+
+    // --- The Main Loop (RequestAnimationFrame) ---
+    function animate() {
+      const { singleSetWidth } = getMetrics();
+
+      // 1. Handle Automatic Movement
+      if (!isDragging && targetX === null) {
+        if (!isPaused) {
+          currentX -= autoScrollSpeed;
+        }
+      } 
+      // 2. Handle Button Animation (Smooth Lerp)
+      else if (targetX !== null) {
+        // Linear Interpolation (Lerp) for smooth easing
+        currentX += (targetX - currentX) * 0.1;
+        
+        // Snap when close enough
+        if (Math.abs(targetX - currentX) < 0.5) {
+          currentX = targetX;
+          targetX = null; // Stop button animation
+        }
+      }
+
+      // 3. Handle Infinite Loop Boundaries (Seamless Teleport)
+      // If we've scrolled past the entire first set of slides...
+      if (currentX <= -singleSetWidth) {
+        // Teleport back to 0 (plus whatever overlap to be seamless)
+        currentX += singleSetWidth;
+        // Adjust target if we were animating across the boundary
+        if (targetX !== null) targetX += singleSetWidth;
+        dragStartX += singleSetWidth;
+      } 
+      // If we've dragged too far right (into positive territory)...
+      else if (currentX > 0) {
+        currentX -= singleSetWidth;
+        if (targetX !== null) targetX -= singleSetWidth;
+        dragStartX -= singleSetWidth;
+      }
+
+      // 4. Apply Transform
+      track.style.transform = `translateX(${currentX}px)`;
+
+      requestAnimationFrame(animate);
+    }
+
+    // Start
+    animate();
   }
 
   // --- 9. MECHANICS TOGGLE FUNCTIONALITY (Restored) ---

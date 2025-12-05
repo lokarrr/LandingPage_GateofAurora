@@ -753,7 +753,7 @@ body {
 }
 
 /* =========================================
-   CAROUSEL/SLIDER STYLES (Replaces Old Gallery)
+   CAROUSEL/SLIDER STYLES (Fixed for JS Loop)
    ========================================= */
 
 .mechanics-gallery-section {
@@ -793,32 +793,56 @@ body {
   border-radius: 15px;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
   background: rgba(0, 0, 0, 0.7);
+  /* PREVENT TEXT SELECTION WHILE SWIPING */
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .carousel-track {
   display: flex;
-  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  /* Use the track's original width to be calculated dynamically in JS */
-  width: fit-content; 
+  width: fit-content;
+  /* GPU Acceleration for smooth JS movement */
+  will-change: transform; 
+  /* Remove CSS animation/transition to prevent conflict with JS */
+  transform: translateX(0);
+  cursor: grab;
+}
+
+.carousel-track:active {
+  cursor: grabbing;
 }
 
 .carousel-slide {
-  /* Calculate width for 3 items with 20px gap between them (10px margin on each side) */
-  flex: 0 0 calc(33.333% - 20px); 
-  height: 400px; /* Fixed height for consistent visuals */
+  flex: 0 0 400px; /* Fixed width base, flexible in JS */
+  /* Make sure width is consistent for math */
+  width: 400px; 
+  height: 400px; 
   border-radius: 12px;
   overflow: hidden;
-  cursor: grab;
-  margin: 15px 10px; /* Visual spacing / gap simulation */
-  transition: all 0.3s ease;
+  margin: 15px 10px; 
   position: relative;
   border: 3px solid rgba(0, 153, 255, 0.3);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-  user-select: none; /* Prevents text selection on drag */
+  /* Prevent image dragging ghost */
+  -webkit-user-drag: none;
+  transition: all 0.3s ease;
 }
 
-.carousel-slide:active {
-  cursor: grabbing;
+/* Responsive adjustments for slide width */
+@media (max-width: 1200px) {
+  .carousel-slide {
+    width: 350px; /* Update width for math */
+    flex: 0 0 350px;
+    height: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-slide {
+    width: 300px; /* Update width for math */
+    flex: 0 0 300px;
+    height: 300px;
+  }
 }
 
 .carousel-slide:hover {
@@ -1996,13 +2020,6 @@ body {
     min-width: 100%;
   }
 
-  /* CAROUSEL RESPONSIVENESS (1200px) */
-  .carousel-slide {
-    /* 2 slides visible on tablet/small desktop */
-    flex: 0 0 calc(50% - 20px); 
-    height: 350px;
-  }
-  
   .tagline-container {
     width: 800px;
   }
@@ -2073,14 +2090,6 @@ body {
   
   .modal-text h2 {
     font-size: 2rem;
-  }
-
-  /* CAROUSEL RESPONSIVENESS (768px) */
-  .carousel-slide {
-    /* 1 slide visible on mobile */
-    flex: 0 0 calc(100% - 40px); 
-    margin: 15px 20px;
-    height: 300px;
   }
   
   .carousel-btn {
