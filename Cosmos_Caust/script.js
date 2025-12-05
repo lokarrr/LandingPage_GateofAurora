@@ -607,197 +607,224 @@
     });
   }
 
-  // --- 10. SCREENSHOT ZOOM MODAL FUNCTIONALITY ---
+  // --- 10. SCREENSHOT ZOOM MODAL FUNCTIONALITY (UPDATED) ---
 
-const screenshotModal = document.getElementById('screenshot-modal');
-const screenshotModalClose = document.querySelector('.screenshot-modal-close');
-const screenshotModalImage = document.getElementById('modal-screenshot-image');
-const screenshotModalCaption = document.getElementById('modal-screenshot-caption');
-const screenshotItems = document.querySelectorAll('.screenshot-item');
+  const screenshotModal = document.getElementById('screenshot-modal');
+  const screenshotModalClose = document.querySelector('.screenshot-modal-close');
+  const screenshotModalImage = document.getElementById('modal-screenshot-image');
+  const screenshotModalCaption = document.getElementById('modal-screenshot-caption');
+  // Convert NodeList to Array to use index tracking
+  const screenshotItems = Array.from(document.querySelectorAll('.screenshot-item')); 
 
-// Open screenshot modal when screenshot is clicked
-screenshotItems.forEach(item => {
-  item.addEventListener('click', (e) => {
-    e.stopPropagation();
-    
+  // Navigation Buttons
+  const prevScreenshotBtn = document.getElementById('prevScreenshotBtn');
+  const nextScreenshotBtn = document.getElementById('nextScreenshotBtn');
+
+  let currentScreenshotIndex = 0;
+
+  // Function to update modal content based on index
+  function updateModalImage(index) {
+    const item = screenshotItems[index];
     const screenshotImg = item.querySelector('.game-screenshot');
     const caption = item.querySelector('.screenshot-caption');
-    
-    // Set modal content
+
+    // Reset zoom
+    screenshotModalImage.style.transform = 'scale(1)';
+
+    // Update Source
     screenshotModalImage.src = screenshotImg.src;
     screenshotModalImage.alt = screenshotImg.alt;
-    
-    // Set caption if exists
+
+    // Update Caption
     if (caption) {
       screenshotModalCaption.textContent = caption.textContent;
       screenshotModalCaption.style.display = 'block';
     } else {
       screenshotModalCaption.style.display = 'none';
     }
-    
-    // Show modal
-    screenshotModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+  }
+
+  // Open modal when any screenshot is clicked
+  screenshotItems.forEach((item, index) => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentScreenshotIndex = index; // Set current index
+      updateModalImage(currentScreenshotIndex);
+      
+      // Show modal
+      screenshotModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
   });
-});
 
-// Close screenshot modal when X is clicked
-screenshotModalClose.addEventListener('click', () => {
-  screenshotModal.classList.remove('active');
-  screenshotModalImage.style.transform = 'scale(1)';
-  document.body.style.overflow = '';
-});
+  // Navigation Logic: Previous Button
+  prevScreenshotBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Wrap around logic (if at 0, go to last)
+    currentScreenshotIndex = (currentScreenshotIndex - 1 + screenshotItems.length) % screenshotItems.length;
+    updateModalImage(currentScreenshotIndex);
+  });
 
-// Close screenshot modal when clicking outside the image
-screenshotModal.addEventListener('click', (e) => {
-  if (e.target === screenshotModal || e.target.classList.contains('screenshot-modal-content')) {
+  // Navigation Logic: Next Button
+  nextScreenshotBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Wrap around logic (if at last, go to 0)
+    currentScreenshotIndex = (currentScreenshotIndex + 1) % screenshotItems.length;
+    updateModalImage(currentScreenshotIndex);
+  });
+
+  // Keyboard Navigation (Left/Right Arrows)
+  document.addEventListener('keydown', (e) => {
+    if (screenshotModal.classList.contains('active')) {
+      if (e.key === 'ArrowLeft') {
+        prevScreenshotBtn.click();
+      } else if (e.key === 'ArrowRight') {
+        nextScreenshotBtn.click();
+      }
+    }
+  });
+
+  // Close modal when X is clicked
+  screenshotModalClose.addEventListener('click', () => {
     screenshotModal.classList.remove('active');
     screenshotModalImage.style.transform = 'scale(1)';
     document.body.style.overflow = '';
-  }
-});
+  });
 
-// Close screenshot modal with Escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && screenshotModal.classList.contains('active')) {
-    screenshotModal.classList.remove('active');
-    screenshotModalImage.style.transform = 'scale(1)';
-    document.body.style.overflow = '';
-  }
-});
-
-// Zoom in/out on mouse wheel
-screenshotModalImage.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  const currentScale = parseFloat(screenshotModalImage.style.transform?.replace('scale(', '')?.replace(')', '')) || 1;
-  const newScale = e.deltaY > 0 ? Math.max(0.5, currentScale - 0.1) : Math.min(3, currentScale + 0.1);
-  screenshotModalImage.style.transform = `scale(${newScale})`;
-  screenshotModalImage.style.maxWidth = 'none'; // Remove max-width constraint when zooming
-  screenshotModalImage.style.maxHeight = 'none'; // Remove max-height constraint when zooming
-});
-
-// Reset zoom when closing modal
-screenshotModalClose.addEventListener('click', () => {
-  screenshotModalImage.style.transform = 'scale(1)';
-  screenshotModalImage.style.maxWidth = '100%';
-  screenshotModalImage.style.maxHeight = '100%';
-});
-
-screenshotModal.addEventListener('click', (e) => {
-  if (e.target === screenshotModal) {
-    screenshotModalImage.style.transform = 'scale(1)';
-    screenshotModalImage.style.maxWidth = '100%';
-    screenshotModalImage.style.maxHeight = '100%';
-  }
-});
-
-// --- 11. NEWSLETTER FORM FUNCTIONALITY - FIXED ---
-
-const newsletterForm = document.querySelector('.newsletter-form');
-const newsletterInput = document.querySelector('.newsletter-input');
-const newsletterButton = document.querySelector('.newsletter-button');
-
-if (newsletterForm) {
-  // Ensure form elements are properly centered on load
-  document.addEventListener('DOMContentLoaded', () => {
-    newsletterForm.style.display = 'flex';
-    newsletterForm.style.justifyContent = 'center';
-    newsletterForm.style.alignItems = 'center';
-    newsletterForm.style.width = '100%';
-    
-    if (newsletterInput) {
-      newsletterInput.style.textAlign = 'center';
-      newsletterInput.style.width = '100%';
-    }
-    
-    if (newsletterButton) {
-      newsletterButton.style.textAlign = 'center';
+  // Close modal when clicking outside the content (on the overlay)
+  screenshotModal.addEventListener('click', (e) => {
+    // Ensure we aren't clicking the navigation buttons or the image itself
+    if (e.target === screenshotModal) {
+      screenshotModal.classList.remove('active');
+      screenshotModalImage.style.transform = 'scale(1)';
+      document.body.style.overflow = '';
     }
   });
-  
-  newsletterButton.addEventListener('click', function(e) {
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && screenshotModal.classList.contains('active')) {
+      screenshotModal.classList.remove('active');
+      screenshotModalImage.style.transform = 'scale(1)';
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Zoom in/out on mouse wheel (Existing Logic)
+  screenshotModalImage.addEventListener('wheel', (e) => {
     e.preventDefault();
-    
-    const email = newsletterInput.value.trim();
-    
-    if (!email) {
-      showNewsletterMessage('Please enter your email address.', 'error');
-      newsletterInput.focus();
-      return;
-    }
-    
-    if (!validateEmail(email)) {
-      showNewsletterMessage('Please enter a valid email address.', 'error');
-      newsletterInput.focus();
-      return;
-    }
-    
-    // Simulate form submission
-    showNewsletterMessage('Thank you for subscribing! You will receive updates soon.', 'success');
-    newsletterInput.value = '';
-    
-    // In a real implementation, you would send the data to a server here
-    console.log('Newsletter subscription:', email);
+    const currentScale = parseFloat(screenshotModalImage.style.transform?.replace('scale(', '')?.replace(')', '')) || 1;
+    const newScale = e.deltaY > 0 ? Math.max(0.5, currentScale - 0.1) : Math.min(3, currentScale + 0.1);
+    screenshotModalImage.style.transform = `scale(${newScale})`;
   });
-  
-  // Also allow form submission with Enter key
-  newsletterInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
+
+  // --- 11. NEWSLETTER FORM FUNCTIONALITY - FIXED ---
+
+  const newsletterForm = document.querySelector('.newsletter-form');
+  const newsletterInput = document.querySelector('.newsletter-input');
+  const newsletterButton = document.querySelector('.newsletter-button');
+
+  if (newsletterForm) {
+    // Ensure form elements are properly centered on load
+    document.addEventListener('DOMContentLoaded', () => {
+      newsletterForm.style.display = 'flex';
+      newsletterForm.style.justifyContent = 'center';
+      newsletterForm.style.alignItems = 'center';
+      newsletterForm.style.width = '100%';
+      
+      if (newsletterInput) {
+        newsletterInput.style.textAlign = 'center';
+        newsletterInput.style.width = '100%';
+      }
+      
+      if (newsletterButton) {
+        newsletterButton.style.textAlign = 'center';
+      }
+    });
+    
+    newsletterButton.addEventListener('click', function(e) {
       e.preventDefault();
-      newsletterButton.click();
-    }
-  });
-}
-
-function validateEmail(email) {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(email);
-}
-
-function showNewsletterMessage(message, type) {
-  // Remove any existing message
-  const existingMessage = document.querySelector('.newsletter-message');
-  if (existingMessage) {
-    existingMessage.remove();
+      
+      const email = newsletterInput.value.trim();
+      
+      if (!email) {
+        showNewsletterMessage('Please enter your email address.', 'error');
+        newsletterInput.focus();
+        return;
+      }
+      
+      if (!validateEmail(email)) {
+        showNewsletterMessage('Please enter a valid email address.', 'error');
+        newsletterInput.focus();
+        return;
+      }
+      
+      // Simulate form submission
+      showNewsletterMessage('Thank you for subscribing! You will receive updates soon.', 'success');
+      newsletterInput.value = '';
+      
+      // In a real implementation, you would send the data to a server here
+      console.log('Newsletter subscription:', email);
+    });
+    
+    // Also allow form submission with Enter key
+    newsletterInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        newsletterButton.click();
+      }
+    });
   }
-  
-  // Create message element
-  const messageEl = document.createElement('div');
-  messageEl.className = `newsletter-message newsletter-${type}`;
-  messageEl.textContent = message;
-  messageEl.style.cssText = `
-    margin-top: 15px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.9rem;
-    text-align: center;
-    animation: fadeIn 0.3s ease;
-    width: 100%;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    ${type === 'success' ? 
-      'background: rgba(0, 200, 100, 0.2); color: #00ff88; border: 1px solid #00ff88;' : 
-      'background: rgba(255, 100, 100, 0.2); color: #ff5555; border: 1px solid #ff5555;'}
-  `;
-  
-  // Insert after the form
-  newsletterForm.parentNode.insertBefore(messageEl, newsletterForm.nextSibling);
-  
-  // Auto-remove after 5 seconds
-  setTimeout(() => {
-    if (messageEl.parentNode) {
-      messageEl.style.opacity = '0';
-      messageEl.style.transition = 'opacity 0.5s ease';
-      setTimeout(() => {
-        if (messageEl.parentNode) {
-          messageEl.remove();
-        }
-      }, 500);
+
+  function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+
+  function showNewsletterMessage(message, type) {
+    // Remove any existing message
+    const existingMessage = document.querySelector('.newsletter-message');
+    if (existingMessage) {
+      existingMessage.remove();
     }
-  }, 5000);
-}
+    
+    // Create message element
+    const messageEl = document.createElement('div');
+    messageEl.className = `newsletter-message newsletter-${type}`;
+    messageEl.textContent = message;
+    messageEl.style.cssText = `
+      margin-top: 15px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+      width: 100%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      ${type === 'success' ? 
+        'background: rgba(0, 200, 100, 0.2); color: #00ff88; border: 1px solid #00ff88;' : 
+        'background: rgba(255, 100, 100, 0.2); color: #ff5555; border: 1px solid #ff5555;'}
+    `;
+    
+    // Insert after the form
+    newsletterForm.parentNode.insertBefore(messageEl, newsletterForm.nextSibling);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+      if (messageEl.parentNode) {
+        messageEl.style.opacity = '0';
+        messageEl.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => {
+          if (messageEl.parentNode) {
+            messageEl.remove();
+          }
+        }, 500);
+      }
+    }, 5000);
+  }
 
 
 })();
