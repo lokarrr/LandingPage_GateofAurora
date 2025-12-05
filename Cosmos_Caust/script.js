@@ -186,7 +186,232 @@
     }
   });
 
-  // --- 7. MECHANICS TOGGLE FUNCTIONALITY ---
+  // --- 7. VIDEO PLAYER FUNCTIONALITY ---
+
+  const videoPlayer = document.getElementById('gameTrailer');
+  const videoOverlay = document.getElementById('videoOverlay');
+  const playButton = document.getElementById('playButton');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const volumeBtn = document.getElementById('volumeBtn');
+  const volumeSlider = document.getElementById('volumeSlider');
+  const volumeSliderFill = document.getElementById('volumeSliderFill');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const videoProgress = document.getElementById('videoProgress');
+  const progressBar = document.getElementById('progressBar');
+  const currentTimeEl = document.getElementById('currentTime');
+  const durationEl = document.getElementById('duration');
+  const videoControls = document.getElementById('videoControls');
+
+  // Format time from seconds to MM:SS
+  function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  // Update volume slider fill
+  function updateVolumeSliderFill() {
+    const volume = videoPlayer.volume;
+    volumeSlider.value = volume;
+    volumeSliderFill.style.transform = `scaleX(${volume})`;
+  }
+
+  // Initialize video player
+  function initVideoPlayer() {
+      // Set video duration when metadata is loaded
+      videoPlayer.addEventListener('loadedmetadata', () => {
+          durationEl.textContent = formatTime(videoPlayer.duration);
+          updateVolumeSliderFill();
+      });
+      
+      // Update current time and progress bar as video plays
+      videoPlayer.addEventListener('timeupdate', () => {
+          const currentTime = videoPlayer.currentTime;
+          const duration = videoPlayer.duration;
+          
+          // Update current time display
+          currentTimeEl.textContent = formatTime(currentTime);
+          
+          // Update progress bar
+          const progressPercent = (currentTime / duration) * 100;
+          progressBar.style.width = `${progressPercent}%`;
+          
+          // Show controls when video is playing
+          if (!videoPlayer.paused && !videoPlayer.ended) {
+              videoControls.classList.add('visible');
+          }
+      });
+      
+      // Handle video play/pause
+      function togglePlayPause() {
+          if (videoPlayer.paused || videoPlayer.ended) {
+              videoPlayer.play();
+              playPauseBtn.classList.add('playing');
+              videoOverlay.classList.add('hidden');
+              videoControls.classList.add('visible');
+          } else {
+              videoPlayer.pause();
+              playPauseBtn.classList.remove('playing');
+          }
+      }
+      
+      // Play button click
+      playButton.addEventListener('click', togglePlayPause);
+      playPauseBtn.addEventListener('click', togglePlayPause);
+      
+      // Volume slider change
+      volumeSlider.addEventListener('input', (e) => {
+          const volume = parseFloat(e.target.value);
+          videoPlayer.volume = volume;
+          videoPlayer.muted = volume === 0;
+          updateVolumeSliderFill();
+          
+          // Update mute button state
+          if (volume === 0) {
+              volumeBtn.classList.add('muted');
+          } else {
+              volumeBtn.classList.remove('muted');
+          }
+      });
+      
+      // Volume button click (toggle mute/unmute)
+      volumeBtn.addEventListener('click', () => {
+          if (videoPlayer.muted) {
+              videoPlayer.muted = false;
+              videoPlayer.volume = volumeSlider.value > 0 ? parseFloat(volumeSlider.value) : 0.5;
+              volumeSlider.value = videoPlayer.volume;
+              volumeBtn.classList.remove('muted');
+          } else {
+              videoPlayer.muted = true;
+              volumeBtn.classList.add('muted');
+          }
+          updateVolumeSliderFill();
+      });
+      
+      // Update mute state when volume changes
+      videoPlayer.addEventListener('volumechange', () => {
+          if (videoPlayer.muted) {
+              volumeBtn.classList.add('muted');
+          } else {
+              volumeBtn.classList.remove('muted');
+          }
+          updateVolumeSliderFill();
+      });
+      
+      // Fullscreen toggle
+      fullscreenBtn.addEventListener('click', () => {
+          const videoContainer = videoPlayer.parentElement;
+          
+          if (!document.fullscreenElement) {
+              if (videoContainer.requestFullscreen) {
+                  videoContainer.requestFullscreen();
+              } else if (videoContainer.webkitRequestFullscreen) {
+                  videoContainer.webkitRequestFullscreen();
+              }
+              videoContainer.classList.add('fullscreen');
+          } else {
+              if (document.exitFullscreen) {
+                  document.exitFullscreen();
+              } else if (document.webkitExitFullscreen) {
+                  document.webkitExitFullscreen();
+              }
+              videoContainer.classList.remove('fullscreen');
+          }
+      });
+      
+      // Exit fullscreen when ESC is pressed
+      document.addEventListener('fullscreenchange', () => {
+          const videoContainer = videoPlayer.parentElement;
+          if (!document.fullscreenElement) {
+              videoContainer.classList.remove('fullscreen');
+          }
+      });
+      
+      // Progress bar click to seek
+      videoProgress.addEventListener('click', (e) => {
+          const rect = videoProgress.getBoundingClientRect();
+          const pos = (e.clientX - rect.left) / rect.width;
+          videoPlayer.currentTime = pos * videoPlayer.duration;
+      });
+      
+      // Show/hide controls on hover
+      const videoContainer = videoPlayer.parentElement;
+      let controlsTimeout;
+      
+      videoContainer.addEventListener('mouseenter', () => {
+          clearTimeout(controlsTimeout);
+          if (!videoPlayer.paused && !videoPlayer.ended) {
+              videoControls.classList.add('visible');
+          }
+      });
+      
+      videoContainer.addEventListener('mouseleave', () => {
+          if (!videoPlayer.paused && !videoPlayer.ended) {
+              controlsTimeout = setTimeout(() => {
+                  videoControls.classList.remove('visible');
+              }, 2000);
+          }
+      });
+      
+      // Handle video end
+      videoPlayer.addEventListener('ended', () => {
+          playPauseBtn.classList.remove('playing');
+          videoOverlay.classList.remove('hidden');
+          videoControls.classList.remove('visible');
+          progressBar.style.width = '0%';
+          currentTimeEl.textContent = '0:00';
+      });
+      
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+          if (e.target === videoPlayer || document.fullscreenElement) {
+              switch(e.key.toLowerCase()) {
+                  case ' ':
+                  case 'k':
+                      e.preventDefault();
+                      togglePlayPause();
+                      break;
+                  case 'm':
+                      e.preventDefault();
+                      videoPlayer.muted = !videoPlayer.muted;
+                      break;
+                  case 'arrowup':
+                      e.preventDefault();
+                      videoPlayer.volume = Math.min(1, videoPlayer.volume + 0.1);
+                      volumeSlider.value = videoPlayer.volume;
+                      updateVolumeSliderFill();
+                      break;
+                  case 'arrowdown':
+                      e.preventDefault();
+                      videoPlayer.volume = Math.max(0, videoPlayer.volume - 0.1);
+                      volumeSlider.value = videoPlayer.volume;
+                      updateVolumeSliderFill();
+                      break;
+                  case 'f':
+                      e.preventDefault();
+                      fullscreenBtn.click();
+                      break;
+                  case 'arrowleft':
+                      e.preventDefault();
+                      videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
+                      break;
+                  case 'arrowright':
+                      e.preventDefault();
+                      videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
+                      break;
+              }
+          }
+      });
+  }
+
+  // Initialize video player when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+      if (videoPlayer) {
+          initVideoPlayer();
+      }
+  });
+
+  // --- 8. MECHANICS TOGGLE FUNCTIONALITY ---
 
   const toggleButtons = document.querySelectorAll('.toggle-btn');
   const toggleContents = document.querySelectorAll('.toggle-content');
@@ -211,7 +436,7 @@
     });
   });
 
-  // --- 8. MECHANICS GALLERY HOVER EFFECTS ---
+  // --- 9. MECHANICS GALLERY HOVER EFFECTS ---
 
   const mechanicsCards = document.querySelectorAll('.mechanics-visual-card');
 
@@ -226,5 +451,199 @@
       card.style.animationPlayState = 'running';
     });
   });
+
+    // --- 10. SCREENSHOT ZOOM MODAL FUNCTIONALITY ---
+// --- 10. SCREENSHOT ZOOM MODAL FUNCTIONALITY ---
+
+const screenshotModal = document.getElementById('screenshot-modal');
+const screenshotModalClose = document.querySelector('.screenshot-modal-close');
+const screenshotModalImage = document.getElementById('modal-screenshot-image');
+const screenshotModalCaption = document.getElementById('modal-screenshot-caption');
+const screenshotItems = document.querySelectorAll('.screenshot-item');
+
+// Open screenshot modal when screenshot is clicked
+screenshotItems.forEach(item => {
+  item.addEventListener('click', (e) => {
+    e.stopPropagation();
+    
+    const screenshotImg = item.querySelector('.game-screenshot');
+    const caption = item.querySelector('.screenshot-caption');
+    
+    // Set modal content
+    screenshotModalImage.src = screenshotImg.src;
+    screenshotModalImage.alt = screenshotImg.alt;
+    
+    // Set caption if exists
+    if (caption) {
+      screenshotModalCaption.textContent = caption.textContent;
+      screenshotModalCaption.style.display = 'block';
+    } else {
+      screenshotModalCaption.style.display = 'none';
+    }
+    
+    // Show modal
+    screenshotModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+// Close screenshot modal when X is clicked
+screenshotModalClose.addEventListener('click', () => {
+  screenshotModal.classList.remove('active');
+  screenshotModalImage.style.transform = 'scale(1)';
+  document.body.style.overflow = '';
+});
+
+// Close screenshot modal when clicking outside the image
+screenshotModal.addEventListener('click', (e) => {
+  if (e.target === screenshotModal || e.target.classList.contains('screenshot-modal-content')) {
+    screenshotModal.classList.remove('active');
+    screenshotModalImage.style.transform = 'scale(1)';
+    document.body.style.overflow = '';
+  }
+});
+
+// Close screenshot modal with Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && screenshotModal.classList.contains('active')) {
+    screenshotModal.classList.remove('active');
+    screenshotModalImage.style.transform = 'scale(1)';
+    document.body.style.overflow = '';
+  }
+});
+
+// Zoom in/out on mouse wheel
+screenshotModalImage.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const currentScale = parseFloat(screenshotModalImage.style.transform?.replace('scale(', '')?.replace(')', '')) || 1;
+  const newScale = e.deltaY > 0 ? Math.max(0.5, currentScale - 0.1) : Math.min(3, currentScale + 0.1);
+  screenshotModalImage.style.transform = `scale(${newScale})`;
+  screenshotModalImage.style.maxWidth = 'none'; // Remove max-width constraint when zooming
+  screenshotModalImage.style.maxHeight = 'none'; // Remove max-height constraint when zooming
+});
+
+// Reset zoom when closing modal
+screenshotModalClose.addEventListener('click', () => {
+  screenshotModalImage.style.transform = 'scale(1)';
+  screenshotModalImage.style.maxWidth = '100%';
+  screenshotModalImage.style.maxHeight = '100%';
+});
+
+screenshotModal.addEventListener('click', (e) => {
+  if (e.target === screenshotModal) {
+    screenshotModalImage.style.transform = 'scale(1)';
+    screenshotModalImage.style.maxWidth = '100%';
+    screenshotModalImage.style.maxHeight = '100%';
+  }
+});
+
+// --- 11. NEWSLETTER FORM FUNCTIONALITY - FIXED ---
+
+const newsletterForm = document.querySelector('.newsletter-form');
+const newsletterInput = document.querySelector('.newsletter-input');
+const newsletterButton = document.querySelector('.newsletter-button');
+
+if (newsletterForm) {
+  // Ensure form elements are properly centered on load
+  document.addEventListener('DOMContentLoaded', () => {
+    newsletterForm.style.display = 'flex';
+    newsletterForm.style.justifyContent = 'center';
+    newsletterForm.style.alignItems = 'center';
+    newsletterForm.style.width = '100%';
+    
+    if (newsletterInput) {
+      newsletterInput.style.textAlign = 'center';
+      newsletterInput.style.width = '100%';
+    }
+    
+    if (newsletterButton) {
+      newsletterButton.style.textAlign = 'center';
+    }
+  });
+  
+  newsletterButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const email = newsletterInput.value.trim();
+    
+    if (!email) {
+      showNewsletterMessage('Please enter your email address.', 'error');
+      newsletterInput.focus();
+      return;
+    }
+    
+    if (!validateEmail(email)) {
+      showNewsletterMessage('Please enter a valid email address.', 'error');
+      newsletterInput.focus();
+      return;
+    }
+    
+    // Simulate form submission
+    showNewsletterMessage('Thank you for subscribing! You will receive updates soon.', 'success');
+    newsletterInput.value = '';
+    
+    // In a real implementation, you would send the data to a server here
+    console.log('Newsletter subscription:', email);
+  });
+  
+  // Also allow form submission with Enter key
+  newsletterInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      newsletterButton.click();
+    }
+  });
+}
+
+function validateEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
+function showNewsletterMessage(message, type) {
+  // Remove any existing message
+  const existingMessage = document.querySelector('.newsletter-message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+  
+  // Create message element
+  const messageEl = document.createElement('div');
+  messageEl.className = `newsletter-message newsletter-${type}`;
+  messageEl.textContent = message;
+  messageEl.style.cssText = `
+    margin-top: 15px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    ${type === 'success' ? 
+      'background: rgba(0, 200, 100, 0.2); color: #00ff88; border: 1px solid #00ff88;' : 
+      'background: rgba(255, 100, 100, 0.2); color: #ff5555; border: 1px solid #ff5555;'}
+  `;
+  
+  // Insert after the form
+  newsletterForm.parentNode.insertBefore(messageEl, newsletterForm.nextSibling);
+  
+  // Auto-remove after 5 seconds
+  setTimeout(() => {
+    if (messageEl.parentNode) {
+      messageEl.style.opacity = '0';
+      messageEl.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        if (messageEl.parentNode) {
+          messageEl.remove();
+        }
+      }, 500);
+    }
+  }, 5000);
+}
+
 
 })();
