@@ -753,7 +753,7 @@ body {
 }
 
 /* =========================================
-   MECHANICS VISUALS GALLERY
+   CAROUSEL/SLIDER STYLES (Replaces Old Gallery)
    ========================================= */
 
 .mechanics-gallery-section {
@@ -783,83 +783,94 @@ body {
   opacity: 0.9;
 }
 
-.mechanics-visuals-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 25px;
-  margin-bottom: 80px;
+/* CAROUSEL CONTAINER */
+.carousel-container {
+  position: relative;
   width: 100%;
   max-width: 1400px;
+  margin: 50px auto 80px;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
 }
 
-.mechanics-visual-card {
-  position: relative;
-  height: 280px;
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* Use the track's original width to be calculated dynamically in JS */
+  width: fit-content; 
+}
+
+.carousel-slide {
+  /* Calculate width for 3 items with 20px gap between them (10px margin on each side) */
+  flex: 0 0 calc(33.333% - 20px); 
+  height: 400px; /* Fixed height for consistent visuals */
   border-radius: 12px;
   overflow: hidden;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 2px solid rgba(255, 153, 0, 0.2);
-  background: rgba(0, 0, 0, 0.7); /* Solid black instead of gradient */
-  animation: cardFloat 6s ease-in-out infinite;
-}
-
-.mechanics-visual-card:nth-child(1) { animation-delay: 0.1s; }
-.mechanics-visual-card:nth-child(2) { animation-delay: 0.2s; }
-.mechanics-visual-card:nth-child(3) { animation-delay: 0.3s; }
-.mechanics-visual-card:nth-child(4) { animation-delay: 0.4s; }
-.mechanics-visual-card:nth-child(5) { animation-delay: 0.5s; }
-.mechanics-visual-card:nth-child(6) { animation-delay: 0.6s; }
-
-.mechanics-visual-card:hover {
-  transform: translateY(-15px) scale(1.03);
-  border-color: var(--primary-color);
-  box-shadow: 
-      0 20px 40px rgba(255, 153, 0, 0.3);
-  z-index: 5;
-  animation-play-state: paused;
-}
-
-.visual-image-container {
+  cursor: grab;
+  margin: 15px 10px; /* Visual spacing / gap simulation */
+  transition: all 0.3s ease;
   position: relative;
+  border: 3px solid rgba(0, 153, 255, 0.3);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+  user-select: none; /* Prevents text selection on drag */
+}
+
+.carousel-slide:active {
+  cursor: grabbing;
+}
+
+.carousel-slide:hover {
+  transform: scale(1.01);
+  border-color: var(--primary-color);
+  box-shadow: 0 10px 30px rgba(255, 153, 0, 0.5);
+}
+
+.carousel-slide .visual-image-container {
+  position: relative; /* Added to contain overlay */
   width: 100%;
   height: 100%;
-  overflow: hidden;
 }
 
 .visual-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(20%) contrast(110%);
-  transition: all 0.5s ease;
+  transition: transform 0.5s ease;
+  filter: grayscale(20%) brightness(0.8) contrast(1.1);
 }
 
-.mechanics-visual-card:hover .visual-image {
-  filter: grayscale(0%) contrast(120%);
-  transform: scale(1.1);
+.carousel-slide:hover .visual-image {
+  transform: scale(1.05);
+  filter: grayscale(0%) brightness(1) contrast(1.2);
 }
 
+/* Hover Effect Restoration */
 .visual-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.95); /* Solid black overlay */
+  /* Start hidden, only visible on hover */
+  background: linear-gradient(to top, 
+      rgba(0, 0, 0, 0.95) 0%, 
+      rgba(0, 0, 0, 0.7) 50%, 
+      rgba(0, 0, 0, 0) 100%);
   padding: 25px;
-  transform: translateY(20px);
-  opacity: 0;
+  transform: translateY(100%); /* Start off screen */
+  opacity: 0; 
   transition: all 0.4s ease;
 }
 
-.mechanics-visual-card:hover .visual-overlay {
+.carousel-slide:hover .visual-overlay {
   transform: translateY(0);
   opacity: 1;
 }
 
 .visual-badge {
   display: inline-block;
-  background: var(--primary-color); /* Solid orange instead of gradient */
+  background: var(--primary-color);
   color: white;
   padding: 5px 15px;
   border-radius: 20px;
@@ -886,7 +897,46 @@ body {
   opacity: 0.9;
 }
 
-/* Interactive Toggle Section */
+
+/* NAVIGATION BUTTONS */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 153, 0, 0.8);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(255, 153, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-btn:hover {
+  background: var(--secondary-color);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 20px var(--secondary-color);
+}
+
+.prev-btn {
+  left: 20px;
+}
+
+.next-btn {
+  right: 20px;
+}
+
+/* =========================================
+   INTERACTIVE TOGGLE SECTION (Restored Styles)
+   ========================================= */
+
 .mechanics-toggle-section {
   background: rgba(0, 0, 0, 0.8); /* Solid black instead of gradient */
   border-radius: 15px;
@@ -955,17 +1005,7 @@ body {
   border-left: 4px solid var(--primary-color);
 }
 
-.feature-icon {
-  font-size: 3rem;
-  background: rgba(255, 153, 0, 0.1);
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 2px solid var(--secondary-color);
-}
+/* Feature Icon removed as it was commented out in HTML */
 
 .feature-text h4 {
   color: var(--primary-color);
@@ -979,12 +1019,6 @@ body {
   line-height: 1.6;
   margin: 0;
   opacity: 0.9;
-}
-
-/* Animation for gallery items */
-@keyframes cardFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
 }
 
 /* =========================================
@@ -1653,248 +1687,6 @@ body {
 }
 
 /* =========================================
-   RESPONSIVE DESIGN
-   ========================================= */
-
-@media (max-width: 1200px) {
-  .character-cinematic-gallery {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 800px;
-  }
-  
-  .modal-content {
-    flex-direction: column;
-    max-height: 95vh;
-  }
-  
-  .modal-image-container {
-    min-height: 300px;
-    min-width: 100%;
-  }
-
-  .mechanics-visuals-gallery {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 800px;
-  }
-
-  .tagline-container {
-    width: 800px;
-  }
-
-  .tagline-text {
-    font-size: 3.5rem;
-  }
-}
-
-@media (max-width: 992px) {
-  .tagline-container {
-    width: 600px;
-  }
-
-  .tagline-text {
-    font-size: 2.8rem;
-  }
-
-  .rules-container {
-    flex-direction: column;
-    max-width: 800px;
-  }
-}
-
-@media (max-width: 768px) {
-  .screenshot-gallery {
-    grid-template-columns: 1fr;
-  }
-  
-  .large-item {
-    grid-column: 1 / 1;
-  }
-  
-  .small-item {
-    aspect-ratio: auto;
-  }
-  
-  .nav-menu {
-    width: 280px;
-    right: -330px;
-  }
-  
-  .tagline-container {
-    width: 100%;
-    max-width: 500px;
-  }
-  
-  .tagline-text {
-    font-size: 2.2rem;
-  }
-  
-  .character-cinematic-gallery {
-    grid-template-columns: 1fr;
-    max-width: 400px;
-  }
-  
-  .cinematic-card {
-    height: 300px;
-  }
-  
-  .modal-content {
-    width: 95%;
-  }
-  
-  .modal-text {
-    padding: 20px;
-  }
-  
-  .modal-text h2 {
-    font-size: 2rem;
-  }
-
-  .mechanics-visuals-gallery {
-    grid-template-columns: 1fr;
-    max-width: 400px;
-  }
-  
-  .toggle-container {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .toggle-btn {
-    width: 100%;
-    max-width: 300px;
-  }
-  
-  .feature-highlight {
-    flex-direction: column;
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .mechanics-visual-card {
-    height: 250px;
-  }
-  
-  .mechanics-toggle-section {
-    padding: 20px;
-  }
-
-  .video-wrapper {
-    width: 100%;
-  }
-  
-  .play-button svg {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .play-text {
-    font-size: 1rem;
-  }
-  
-  .video-controls {
-    padding: 10px 15px;
-    gap: 10px;
-  }
-  
-  .control-btn {
-    width: 35px;
-    height: 35px;
-  }
-  
-  .control-btn svg {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .time-display {
-    font-size: 0.8rem;
-    min-width: 80px;
-  }
-
-  .content-section-wrapper {
-    padding: 80px 5%;
-  }
-  
-  .volume-slider-container {
-    display: none;
-  }
-
-  .screenshot-modal-content {
-    max-width: 95%;
-  }
-  
-  .screenshot-modal-close {
-    top: 10px;
-    right: 10px;
-    font-size: 2rem;
-    width: 35px;
-    height: 35px;
-  }
-  
-  .screenshot-modal-caption {
-    font-size: 1rem;
-    padding: 10px 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .mechanics-gallery-section h3 {
-    font-size: 1.5rem;
-  }
-  
-  .mechanics-intro {
-    font-size: 1rem;
-  }
-
-  .play-button svg {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .play-text {
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-  }
-  
-  .video-controls {
-    gap: 8px;
-  }
-
-  .tagline-text {
-    font-size: 1.8rem;
-  }
-
-  .begin-button {
-    width: 220px;
-  }
-
-  .begin-button .button-text {
-    font-size: 1.2rem;
-  }
-  
-  .time-display {
-    font-size: 0.7rem;
-    min-width: 70px;
-  }
-
-  .screenshot-modal-content {
-    max-width: 98%;
-  }
-  
-  .screenshot-modal-close {
-    top: 8px;
-    right: 8px;
-    font-size: 1.8rem;
-    width: 30px;
-    height: 30px;
-  }
-  
-  .screenshot-modal-caption {
-    font-size: 0.9rem;
-    padding: 8px 10px;
-  }
-}
-/* =========================================
    SOCIAL MEDIA FOOTER SECTION
    ========================================= */
 
@@ -2185,10 +1977,188 @@ body {
 }
 
 /* =========================================
-   RESPONSIVE ADJUSTMENTS
+   RESPONSIVE DESIGN
    ========================================= */
 
+@media (max-width: 1200px) {
+  .character-cinematic-gallery {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 800px;
+  }
+  
+  .modal-content {
+    flex-direction: column;
+    max-height: 95vh;
+  }
+  
+  .modal-image-container {
+    min-height: 300px;
+    min-width: 100%;
+  }
+
+  /* CAROUSEL RESPONSIVENESS (1200px) */
+  .carousel-slide {
+    /* 2 slides visible on tablet/small desktop */
+    flex: 0 0 calc(50% - 20px); 
+    height: 350px;
+  }
+  
+  .tagline-container {
+    width: 800px;
+  }
+
+  .tagline-text {
+    font-size: 3.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .tagline-container {
+    width: 600px;
+  }
+
+  .tagline-text {
+    font-size: 2.8rem;
+  }
+
+  .rules-container {
+    flex-direction: column;
+    max-width: 800px;
+  }
+}
+
 @media (max-width: 768px) {
+  .screenshot-gallery {
+    grid-template-columns: 1fr;
+  }
+  
+  .large-item {
+    grid-column: 1 / 1;
+  }
+  
+  .small-item {
+    aspect-ratio: auto;
+  }
+  
+  .nav-menu {
+    width: 280px;
+    right: -330px;
+  }
+  
+  .tagline-container {
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .tagline-text {
+    font-size: 2.2rem;
+  }
+  
+  .character-cinematic-gallery {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+  
+  .cinematic-card {
+    height: 300px;
+  }
+  
+  .modal-content {
+    width: 95%;
+  }
+  
+  .modal-text {
+    padding: 20px;
+  }
+  
+  .modal-text h2 {
+    font-size: 2rem;
+  }
+
+  /* CAROUSEL RESPONSIVENESS (768px) */
+  .carousel-slide {
+    /* 1 slide visible on mobile */
+    flex: 0 0 calc(100% - 40px); 
+    margin: 15px 20px;
+    height: 300px;
+  }
+  
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  .prev-btn {
+    left: 5px;
+  }
+  .next-btn {
+    right: 5px;
+  }
+  
+  .feature-highlight {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .video-wrapper {
+    width: 100%;
+  }
+  
+  .play-button svg {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .play-text {
+    font-size: 1rem;
+  }
+  
+  .video-controls {
+    padding: 10px 15px;
+    gap: 10px;
+  }
+  
+  .control-btn {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .control-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .time-display {
+    font-size: 0.8rem;
+    min-width: 80px;
+  }
+
+  .content-section-wrapper {
+    padding: 80px 5%;
+  }
+  
+  .volume-slider-container {
+    display: none;
+  }
+
+  .screenshot-modal-content {
+    max-width: 95%;
+  }
+  
+  .screenshot-modal-close {
+    top: 10px;
+    right: 10px;
+    font-size: 2rem;
+    width: 35px;
+    height: 35px;
+  }
+  
+  .screenshot-modal-caption {
+    font-size: 1rem;
+    padding: 10px 15px;
+  }
+  
   .newsletter-form {
     flex-direction: column;
     align-items: stretch;
@@ -2211,144 +2181,7 @@ body {
   .footer-links a {
     margin: 5px 0;
   }
-}
 
-@media (max-width: 480px) {
-  .newsletter-section {
-    padding: 25px 20px;
-  }
-  
-  .newsletter-section h3 {
-    font-size: 1.5rem;
-  }
-  
-  .newsletter-section > p {
-    font-size: 1rem;
-  }
-  
-  .footer-tagline {
-    font-size: 1.1rem;
-  }
-  
-  .footer-links {
-    flex-direction: column;
-    gap: 10px;
-  }
-}
-
-/* =========================================
-   SCREENSHOT ZOOM MODAL - FIXED
-   ========================================= */
-
-.screenshot-modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.95);
-  z-index: 2000;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.screenshot-modal.active {
-  display: flex;
-  opacity: 1;
-}
-
-.screenshot-modal-content {
-  position: relative;
-  max-width: 95vw;
-  max-height: 95vh;
-  width: auto;
-  height: auto;
-  background: rgba(0, 0, 0, 0.9);
-  border-radius: 10px;
-  overflow: hidden;
-  border: 3px solid var(--primary-color);
-  box-shadow: 0 0 50px rgba(255, 153, 0, 0.5);
-  animation: screenshotModalAppear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  display: flex;
-  flex-direction: column;
-}
-
-@keyframes screenshotModalAppear {
-  from {
-    transform: scale(0.8) translateY(30px);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-  }
-}
-
-.screenshot-modal-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  color: white;
-  font-size: 2.5rem;
-  cursor: pointer;
-  z-index: 2001;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 50%;
-  border: 2px solid var(--primary-color);
-  line-height: 1;
-  padding: 0;
-  margin: 0;
-}
-
-.screenshot-modal-close:hover {
-  color: var(--primary-color);
-  transform: rotate(90deg);
-  background: rgba(255, 153, 0, 0.2);
-  border-color: var(--secondary-color);
-}
-
-.screenshot-modal-image-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  overflow: hidden;
-  min-height: 0;
-}
-
-.screenshot-modal-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  transition: transform 0.3s ease;
-  display: block;
-  margin: 0 auto;
-}
-
-.screenshot-modal-caption {
-  padding: 15px 20px;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
-  color: var(--primary-color);
-  font-size: 1.2rem;
-  font-weight: 600;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-top: 2px solid rgba(255, 153, 0, 0.3);
-}
-
-/* Responsive adjustments for social section */
-@media (max-width: 768px) {
   .social-grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
@@ -2369,26 +2202,65 @@ body {
   .social-name {
     font-size: 1.3rem;
   }
-  
-  .newsletter-form {
-    flex-direction: column;
-  }
-  
-  .newsletter-button {
-    width: 100%;
-  }
-  
-  .footer-bottom {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .footer-links {
-    gap: 15px;
-  }
 }
 
 @media (max-width: 480px) {
+  .mechanics-gallery-section h3 {
+    font-size: 1.5rem;
+  }
+  
+  .mechanics-intro {
+    font-size: 1rem;
+  }
+
+  .play-button svg {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .play-text {
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+  
+  .video-controls {
+    gap: 8px;
+  }
+
+  .tagline-text {
+    font-size: 1.8rem;
+  }
+
+  .begin-button {
+    width: 220px;
+  }
+
+  .begin-button .button-text {
+    font-size: 1.2rem;
+  }
+  
+  .time-display {
+    font-size: 0.7rem;
+    min-width: 70px;
+  }
+
+  .screenshot-modal-content {
+    max-width: 98%;
+  }
+  
+  .screenshot-modal-close {
+    top: 8px;
+    right: 8px;
+    font-size: 1.8rem;
+    width: 30px;
+    height: 30px;
+  }
+  
+  .screenshot-modal-caption {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+  
   .social-grid {
     grid-template-columns: 1fr;
   }

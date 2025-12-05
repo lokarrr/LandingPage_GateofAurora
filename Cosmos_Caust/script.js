@@ -23,6 +23,9 @@
         el.classList.remove('section-hidden');
       }
     });
+    // Initialize the carousel and toggles after the window loads
+    initCarousel(); 
+    initToggleButtons(); // Restore toggle buttons initialization
   });
   
   // --- 2. HAMBURGER MENU FUNCTIONALITY ---
@@ -65,7 +68,9 @@
       const sectionTop = section.offsetTop;
       const sectionHeight = section.offsetHeight;
       
-      if (scrollY >= sectionTop - sectionHeight / 3) {
+      // Determine if the current scroll position is past the start of the section
+      // adjusted by 1/3rd of the section height to trigger earlier
+      if (scrollY >= sectionTop - sectionHeight / 3) { 
         currentSection = section.getAttribute("id");
       }
     });
@@ -87,7 +92,8 @@
       if (entry.isIntersecting) {
         entry.target.classList.remove('section-hidden');
       } else {
-        entry.target.classList.add('section-hidden');
+        // Optional: re-hide when scrolling away
+        // entry.target.classList.add('section-hidden');
       }
     });
   }, {
@@ -187,7 +193,7 @@
   });
 
   // --- 7. VIDEO PLAYER FUNCTIONALITY ---
-
+  
   const videoPlayer = document.getElementById('gameTrailer');
   const videoOverlay = document.getElementById('videoOverlay');
   const playButton = document.getElementById('playButton');
@@ -411,49 +417,237 @@
       }
   });
 
-  // --- 8. MECHANICS TOGGLE FUNCTIONALITY ---
-
-  const toggleButtons = document.querySelectorAll('.toggle-btn');
-  const toggleContents = document.querySelectorAll('.toggle-content');
-
-  toggleButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      // Remove active class from all buttons and contents
-      toggleButtons.forEach(btn => btn.classList.remove('active'));
-      toggleContents.forEach(content => content.classList.remove('active'));
-      
-      // Add active class to clicked button
-      button.classList.add('active');
-      
-      // Show corresponding content
-      const toggleType = button.getAttribute('data-toggle');
-      const contentId = `${toggleType}-content`;
-      const contentElement = document.getElementById(contentId);
-      
-      if (contentElement) {
-        contentElement.classList.add('active');
-      }
-    });
-  });
-
-  // --- 9. MECHANICS GALLERY HOVER EFFECTS ---
-
-  const mechanicsCards = document.querySelectorAll('.mechanics-visual-card');
-
-  mechanicsCards.forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      // Pause the floating animation on hover
-      card.style.animationPlayState = 'paused';
-    });
+  // --- 8. CAROUSEL/SLIDER FUNCTIONALITY (New Section) ---
+  
+  function initCarousel() {
+    const track = document.getElementById('carouselTrack');
+    const slides = Array.from(track.querySelectorAll('.carousel-slide'));
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
     
-    card.addEventListener('mouseleave', () => {
-      // Resume the floating animation
-      card.style.animationPlayState = 'running';
-    });
-  });
+    if (!track || slides.length === 0) return;
 
-    // --- 10. SCREENSHOT ZOOM MODAL FUNCTIONALITY ---
-// --- 10. SCREENSHOT ZOOM MODAL FUNCTIONALITY ---
+    let currentIndex = 0;
+    const itemsPerView = 3;
+    let slideWidth = 0;
+    let autoPlayInterval;
+    const cloneCount = itemsPerView;
+
+    // --- Cloning for Infinite Loop ---
+    // Clone end slides to the beginning
+    for (let i = 0; i < cloneCount; i++) {
+        const clone = slides[slides.length - 1 - i].cloneNode(true);
+        track.prepend(clone);
+    }
+    // Clone start slides to the end
+    for (let i = 0; i < cloneCount; i++) {
+        const clone = slides[i].cloneNode(true);
+        track.appendChild(clone);
+    }
+    
+    const allSlides = Array.from(track.querySelectorAll('.carousel-slide'));
+    const totalRealSlides = slides.length;
+    let currentSlideIndex = cloneCount; // Start position is the first real slide
+
+    // --- Calculation and Setup ---
+    function updateSlideWidth() {
+        // Calculate the width of one real slide based on the first real element
+        const firstRealSlide = allSlides[cloneCount];
+        if (firstRealSlide) {
+            // Get the width of the slide including its left/right margins (20px total margin)
+            slideWidth = firstRealSlide.offsetWidth + 20; 
+        }
+        
+        // Set initial position to the first real slide set (skip initial clones)
+        track.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
+    }
+
+    // Recalculate width on resize
+    window.addEventListener('resize', () => {
+        // Temporarily remove transition for instant position update on resize
+        track.style.transition = 'none';
+        updateSlideWidth();
+        // Restore transition after a brief moment
+        setTimeout(() => {
+            track.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        }, 50);
+    });
+
+    // Initial setup
+    updateSlideWidth();
+    
+    // --- Carousel Movement Logic ---
+    function moveSlides(direction) {
+        // direction: 1 for next, -1 for previous
+        currentSlideIndex += direction;
+        
+        track.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        track.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
+    }
+    
+    // Logic for smooth, infinite loop transition
+    function handleLoopTransition() {
+        if (currentSlideIndex >= totalRealSlides + cloneCount) {
+            // Reached the end clones, jump back to the first real slide instantly
+            currentSlideIndex = cloneCount;
+            // Remove transition for instant jump
+            track.style.transition = 'none';
+            track.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
+            // Re-enable transition after brief pause
+            setTimeout(() => {
+                track.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            }, 50);
+            
+        } else if (currentSlideIndex < cloneCount) {
+            // Reached the beginning clones, jump back to the last real slide instantly
+            currentSlideIndex = totalRealSlides + cloneCount - 1;
+            // Remove transition for instant jump
+            track.style.transition = 'none';
+            track.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
+            // Re-enable transition after brief pause
+            setTimeout(() => {
+                track.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            }, 50);
+        }
+    }
+    
+    // Listen for CSS transition end to handle the loop jump
+    track.addEventListener('transitionend', handleLoopTransition);
+    
+    // --- Navigation Buttons ---
+    nextBtn.addEventListener('click', () => {
+        stopAutoplay();
+        moveSlides(1);
+        startAutoplay();
+    });
+
+    prevBtn.addEventListener('click', () => {
+        stopAutoplay();
+        moveSlides(-1);
+        startAutoplay();
+    });
+
+    // --- Autoplay ---
+    function startAutoplay() {
+        stopAutoplay(); // Clear any existing interval
+        // Autoplay runs continuously
+        autoPlayInterval = setInterval(() => {
+            moveSlides(1); // Move to the right (slides move left)
+        }, 3000); // Change slide every 3 seconds
+    }
+
+    function stopAutoplay() {
+        clearInterval(autoPlayInterval);
+    }
+    
+    // Start initial autoplay (Removed mouseenter/mouseleave listeners)
+    startAutoplay();
+
+    // --- Touch/Swipe Functionality ---
+    let touchStartX = 0;
+    let touchMoveX = 0;
+    let isDragging = false;
+
+    track.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        touchStartX = e.clientX;
+        track.style.transition = 'none';
+        stopAutoplay();
+    });
+
+    track.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        touchMoveX = e.clientX;
+        const dragDistance = touchMoveX - touchStartX;
+        
+        // Calculate the current base translate value from the current index
+        const currentTranslate = -currentSlideIndex * slideWidth;
+        
+        // Apply the drag distance on top of the base translate
+        track.style.transform = `translateX(${currentTranslate + dragDistance}px)`;
+    });
+
+    track.addEventListener('mouseup', handleDragEnd);
+    track.addEventListener('mouseleave', () => {
+        if (isDragging) {
+            handleDragEnd(); // Treat mouse leaving as a release
+        }
+    });
+
+    track.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        touchStartX = e.touches[0].clientX;
+        track.style.transition = 'none';
+        stopAutoplay();
+    }, { passive: true }); // Use passive listener for better scrolling performance
+
+    track.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        touchMoveX = e.touches[0].clientX;
+        const dragDistance = touchMoveX - touchStartX;
+        const currentTranslate = -currentSlideIndex * slideWidth;
+        track.style.transform = `translateX(${currentTranslate + dragDistance}px)`;
+    });
+
+    track.addEventListener('touchend', handleDragEnd);
+
+    function handleDragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        const dragDistance = touchMoveX - touchStartX;
+        const threshold = slideWidth * 0.2; // 20% of a slide width is the swipe threshold
+
+        // Decide if we should move to the next/previous slide
+        if (dragDistance > threshold) {
+            // Swiped right (show previous slide)
+            moveSlides(-1);
+        } else if (dragDistance < -threshold) {
+            // Swiped left (show next slide)
+            moveSlides(1);
+        } else {
+            // Not enough swipe distance, snap back to current slide
+            track.style.transition = 'transform 0.3s ease';
+            track.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
+        }
+        
+        // Reset touch tracking variables
+        touchStartX = 0;
+        touchMoveX = 0;
+        
+        startAutoplay();
+    }
+  }
+
+  // --- 9. MECHANICS TOGGLE FUNCTIONALITY (Restored) ---
+  
+  function initToggleButtons() {
+    const toggleButtons = document.querySelectorAll('.toggle-btn');
+    const toggleContents = document.querySelectorAll('.toggle-content');
+
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons and contents
+        toggleButtons.forEach(btn => btn.classList.remove('active'));
+        toggleContents.forEach(content => content.classList.remove('active'));
+        
+        // Add active class to clicked button
+        button.classList.add('active');
+        
+        // Show corresponding content
+        const toggleType = button.getAttribute('data-toggle');
+        const contentId = `${toggleType}-content`;
+        const contentElement = document.getElementById(contentId);
+        
+        if (contentElement) {
+          contentElement.classList.add('active');
+        }
+      });
+    });
+  }
+
+  // --- 10. SCREENSHOT ZOOM MODAL FUNCTIONALITY ---
 
 const screenshotModal = document.getElementById('screenshot-modal');
 const screenshotModalClose = document.querySelector('.screenshot-modal-close');
