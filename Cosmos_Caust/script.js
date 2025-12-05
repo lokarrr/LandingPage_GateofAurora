@@ -51,9 +51,6 @@
   // Listen for scroll events to update the active link in the navbar
   window.addEventListener("scroll", updateActiveLink);
 
-  // Note: The previous click listener with setTimeout was removed 
-  // to allow the scroll listener to handle updates naturally.
-
   // --- 3. FADE-IN ANIMATION LOGIC (Intersection Observer) ---
 
   const observer = new IntersectionObserver((entries) => {
@@ -77,6 +74,24 @@
   animatedWrappers.forEach((el) => {
     // Start observing everything; the 'section-hidden' class controls the state
     observer.observe(el);
+  });
+
+  // --- 4. BACK TO TOP BUTTON LOGIC ---
+  const backToTopButton = document.getElementById("backToTop");
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 300) {
+      backToTopButton.style.display = "block";
+    } else {
+      backToTopButton.style.display = "none";
+    }
+  });
+
+  backToTopButton.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
   });
 
 })();
