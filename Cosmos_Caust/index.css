@@ -15,12 +15,14 @@ body {
   padding: 0;
   font-family: 'Orbitron', sans-serif;
   background-color: #000; /* Fallback background */
+  color: var(--text-color); /* Set default text color to white */
 }
 
 /* 1. Structural styles for content sections (NO ANIMATION STYLES HERE) */
 .content-section {
   background-color: var(--background-overlay);
   margin-top: 50px; /* Separator for sections */
+  color: var(--text-color); /* Ensure all text in content sections is white */
 }
 
 /* 2. THE ANIMATION WRAPPER: Handles the fade-in animation and content sizing */
@@ -300,43 +302,25 @@ body {
   font-weight: 500;
 }
 
-/* --- BOTTOM: Decorative Elements --- */
-.diagonal-container {
-  width: 1050px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  position: absolute;
-  bottom: -20%;
-  left: 23%;
-  z-index: 1;
-}
-
-.diagonal {
-  width: 350px;
-  height: 150px;
-  background-color: var(--background-overlay);
-  clip-path: polygon(12% 0, 100% 0, 88% 100%, 0% 100%);
-}
-
-/* --- STORY SECTION SPECIFIC STYLES --- */
-#story-section {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('images/fe91d17d-2fa9-4009-8ed6-235629e02ffe.png');
-    background-size: cover;
-    background-position: center;
-    color: white;
-    text-align: left;
-    margin-top: 0; 
-}
-
-#story-section .content-section-wrapper {
+/* =========================================
+   ALL CONTENT SECTIONS - CENTERED LAYOUT
+   ========================================= */
+#about-section .content-section-wrapper,
+#story-section .content-section-wrapper,
+#mechanics-section .content-section-wrapper,
+#characters-section .content-section-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: left;
     min-height: 100vh;
 }
 
-#story-section h2 {
+/* Common heading styles for centered sections */
+#about-section h2,
+#story-section h2,
+#mechanics-section h2,
+#characters-section h2 {
     font-size: 2.5rem;
     color: var(--primary-color);
     text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
@@ -345,18 +329,56 @@ body {
     width: 100%;
 }
 
-#story-section h3 {
-    font-size: 1.8rem;
-    color: var(--secondary-color);
-    margin-top: 50px;
-    margin-bottom: 15px;
-}
-
-#story-section p {
+/* Common paragraph and list styles for centered sections */
+#about-section p,
+#story-section p,
+#mechanics-section p,
+#characters-section p,
+#about-section ul,
+#story-section ul,
+#mechanics-section ul,
+#characters-section ul {
     font-size: 1.1rem;
     line-height: 1.6;
     max-width: 800px;
     margin-bottom: 20px;
+    width: 100%;
+    color: var(--text-color); /* Ensure all text is white */
+}
+
+/* Common h3 styles for centered sections */
+#about-section h3,
+#story-section h3,
+#mechanics-section h3,
+#characters-section h3 {
+    font-size: 1.8rem;
+    color: var(--secondary-color);
+    margin-top: 50px;
+    margin-bottom: 15px;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* About section specific list styling */
+#about-section ul {
+    max-width: 800px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+#about-section li {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    color: var(--text-color); /* Ensure list items are white */
+}
+
+/* --- STORY SECTION SPECIFIC BACKGROUND --- */
+#story-section {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('images/fe91d17d-2fa9-4009-8ed6-235629e02ffe.png');
+    background-size: cover;
+    background-position: center;
+    margin-top: 0; 
 }
 
 /* --- MEDIA SECTION SPECIFIC STYLES --- */
@@ -450,6 +472,15 @@ body {
   z-index: 2;
 }
 
+/* Screenshot title */
+.screenshot-title {
+  color: var(--text-color);
+  text-align: center;
+  margin-top: 30px;
+  font-style: italic;
+  font-size: 1.2rem;
+}
+
 /* =========================================
    HOME PAGE INTRO ANIMATION 
    ========================================= */
@@ -517,17 +548,8 @@ body {
   animation-delay: 1.3s;
 }
 
-.diagonal {
-  opacity: 0;
-  animation: fadeInUp 1s ease-out forwards;
-}
-
-.diagonal:nth-child(1) { animation-delay: 1.0s; }
-.diagonal:nth-child(2) { animation-delay: 1.2s; }
-.diagonal:nth-child(3) { animation-delay: 1.4s; }
-
 /* =========================================
-   NEW SECTIONS: CHARACTERS & MECHANICS 
+   CHARACTERS SECTION STYLES 
    ========================================= */
 
 .character-grid {
@@ -536,6 +558,8 @@ body {
     gap: 40px;
     flex-wrap: wrap;
     margin-top: 30px;
+    width: 100%;
+    max-width: 800px;
 }
   
 .char-card {
@@ -546,6 +570,7 @@ body {
     text-align: center;
     border-radius: 10px;
     transition: transform 0.3s;
+    color: var(--text-color); /* Ensure card text is white */
 }
   
 .char-card:hover {
@@ -574,6 +599,10 @@ body {
     margin-bottom: 10px;
 }
 
+/* =========================================
+   MECHANICS SECTION STYLES 
+   ========================================= */
+
 .rules-container {
     display: flex;
     justify-content: space-around;
@@ -589,6 +618,8 @@ body {
     padding: 30px;
     flex: 1;
     border-radius: 0 10px 10px 0;
+    text-align: left;
+    color: var(--text-color); /* Ensure all text in rule boxes is white */
 }
   
 .rule-box h3 {
@@ -608,8 +639,19 @@ body {
     margin-bottom: 15px;
     font-size: 1.1rem;
     line-height: 1.5;
+    color: var(--text-color); /* Ensure list items are white */
 }
 
+.rule-box strong {
+    color: var(--primary-color); /* Keep strong tags orange for emphasis */
+}
+
+.rules-subheading {
+    margin-top: 30px;
+    color: var(--primary-color) !important;
+}
+
+/* Back to top button */
 #backToTop {
     display: none;
     position: fixed;
@@ -620,16 +662,17 @@ body {
     border: none;
     outline: none;
     background-color: var(--primary-color);
-    color: black;
+    color: white; /* Changed from black to white for better contrast */
     cursor: pointer;
     padding: 10px 15px;
     border-radius: 5px;
     box-shadow: 0 0 10px var(--secondary-color);
-    transition: background-color 0.3s, transform 0.3s;
+    transition: background-color 0.3s, transform 0.3s, color 0.3s;
 }
 
 #backToTop:hover {
-    background-color: white;
+    background-color: var(--secondary-color);
+    color: white;
     transform: scale(1.1);
 }
 
@@ -646,6 +689,7 @@ body {
   }
   .rules-container {
     flex-direction: column;
+    max-width: 800px;
   }
   .nav-menu {
     width: 280px;
@@ -656,5 +700,12 @@ body {
   }
   .tagline-text {
     font-size: 2.5rem;
+  }
+  .character-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  .char-card {
+    width: 90%;
   }
 }
